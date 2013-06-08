@@ -67,7 +67,7 @@ This activates the default pre-commit hook, if the file doesn't exist, update yo
 Use an external merge-tool
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-see http://getmangos.com/community/forum/27/source-code-management/TODOTODO[_Freghar_'s Thread]
+see http://getmangos.co.uk/community/forum/27/source-code-management/TODOTODO[_Freghar_'s Thread]
 
 KDiff3 (not kdiff or kdiff2)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -141,7 +141,7 @@ http://book.git-scm.com/ - Very nice, including flash videos about most topics
 http://progit.org/book/ - A bit more detailed
 
 
-http://getmangos.com/community/forum/27/source-code-management/ - Collection of various topics on MaNGOS
+http://getmangos.co.uk/community/forum/27/source-code-management/ - Collection of various topics on MaNGOS
 
 What is this Git about?
 ~~~~~~~~~~~~~~~~~~~~~~

@@ -8,15 +8,15 @@ Subject: [PATCH] ScriptDev2 patch
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/src/bindings/CMakeLists.txt b/src/bindings/CMakeLists.txt
-index fc13e3a..592d773 100644
+index 13eedc4..d88ebb5 100644
 --- a/src/bindings/CMakeLists.txt
 +++ b/src/bindings/CMakeLists.txt
-@@ -16,4 +16,4 @@
- # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- #
+@@ -18,4 +18,4 @@
+ # Clone https://github.com/mangoszero/scripts here, and uncomment the next
+ # line.
  
--# add_subdirectory(universal)
-+add_subdirectory(ScriptDev2)
+-# add_subdirectory(scripts)
++add_subdirectory(scripts)
 -- 
 1.7.3.1.msysgit.0
 
