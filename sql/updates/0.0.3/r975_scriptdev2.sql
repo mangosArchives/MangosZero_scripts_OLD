@@ -1,11 +1,11 @@
 DELETE FROM script_texts WHERE entry BETWEEN -1000305 and -1000298;
 INSERT INTO script_texts (entry,content_default,sound,type,language,emote,comment) VALUES
-(-1000298, 'Alright, alright I think I can figure out how to operate this thing...',0,0,0,393,'wizzlecrank SAY_START'),
+(-1000298, 'Alright, alright I think I can figure out how to operate this thing...',0,0,0,0,'wizzlecrank SAY_START'),
 (-1000299, 'Arrrgh! This isn\'t right!',0,0,0,0,'wizzlecrank SAY_STARTUP1'),
 (-1000300, 'Okay, I think I\'ve got it, now. Follow me, $n!',0,0,0,1,'wizzlecrank SAY_STARTUP2'),
 (-1000301, 'There\'s the stolen shredder! Stop it or Lugwizzle will have our hides!',0,1,0,0,'wizzlecrank SAY_MERCENARY'),
 (-1000302, 'Looks like we\'re out of woods, eh? Wonder what this does...',0,0,0,0,'wizzlecrank SAY_PROGRESS_1'),
-(-1000303, 'Come on, don\'t break down on me now!',0,0,0,393,'wizzlecrank SAY_PROGRESS_2'),
+(-1000303, 'Come on, don\'t break down on me now!',0,0,0,0,'wizzlecrank SAY_PROGRESS_2'),
 (-1000304, 'That was a close one! Well, let\'s get going, it\'s still a ways to Ratchet!',0,0,0,0,'wizzlecrank SAY_PROGRESS_3'),
 (-1000305, 'Hmm... I don\'t think this blinking red light is a good thing...',0,0,0,0,'wizzlecrank SAY_END');
 
