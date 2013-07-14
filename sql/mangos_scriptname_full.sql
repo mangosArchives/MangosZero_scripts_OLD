@@ -399,6 +399,7 @@ UPDATE creature_template SET ScriptName='npc_deathstalker_faerleia' WHERE entry=
 /* STOCKADES */
 
 /* STONETALON MOUNTAINS */
+UPDATE creature_template SET ScriptName='npc_piznik' WHERE entry=4276;
 UPDATE creature_template SET ScriptName='npc_kaya' WHERE entry=11856;
 
 /* STORMWIND CITY */
