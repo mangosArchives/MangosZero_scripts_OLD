@@ -79,7 +79,7 @@ UPDATE creature_template SET ScriptName='guard_bluffwatcher' WHERE entry=3084;
 UPDATE creature_template SET ScriptName='guard_durotar' WHERE entry=5953;
 UPDATE creature_template SET ScriptName='guard_mulgore' WHERE entry IN (3212,3215,3217,3218,3219,3220,3221,3222,3223,3224);
 UPDATE creature_template SET ScriptName='guard_dunmorogh' WHERE entry IN (727,13076);
-UPDATE creature_template SET ScriptName='guard_tirisfal' WHERE entry IN (1735,1738,2210,1744,1745,5725,1743,2209,1746,1742);
+UPDATE creature_template SET ScriptName='guard_tirisfal' WHERE entry IN (1735,1738,2210,1744,1745,5725,1743,2209,1746,1742,7980);
 
 /* ITEM */
 
