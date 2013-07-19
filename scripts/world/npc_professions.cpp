@@ -127,7 +127,8 @@ there is no difference here (except that default text is chosen with `gameobject
 #define S_LEARN_ELEMENTAL       10659
 #define S_LEARN_TRIBAL          10661
 
-#define S_UNLEARN_DRAGON        36434
+#define S_UNLEARN_DRAGON        10656// 36434 - Forget dragonscale LW was used before, this is not
+                                     // available in wow 1.12
 #define S_UNLEARN_ELEMENTAL     36328
 #define S_UNLEARN_TRIBAL        36433
 
@@ -255,15 +256,21 @@ void ProfessionUnlearnSpells(Player* pPlayer, uint32 type)
             pPlayer->removeSpell(34540);                    // Lionheart Champion
             pPlayer->removeSpell(36259);                    // Lionheart Executioner
             break;
-        case 36434:                                         // S_UNLEARN_DRAGON
-            pPlayer->removeSpell(36076);                    // Dragonstrike Leggings
-            pPlayer->removeSpell(36079);                    // Golden Dragonstrike Breastplate
-            pPlayer->removeSpell(35576);                    // Ebon Netherscale Belt
-            pPlayer->removeSpell(35577);                    // Ebon Netherscale Bracers
-            pPlayer->removeSpell(35575);                    // Ebon Netherscale Breastplate
-            pPlayer->removeSpell(35582);                    // Netherstrike Belt
-            pPlayer->removeSpell(35584);                    // Netherstrike Bracers
-            pPlayer->removeSpell(35580);                    // Netherstrike Breastplate
+        case S_UNLEARN_DRAGON:                              // S_UNLEARN_DRAGON
+            pPlayer->removeSpell(S_UNLEARN_DRAGON);         // The actual dragonscale making spell/prof
+            pPlayer->removeSpell(20855);                    // Black Dragonscale Boots
+            pPlayer->removeSpell(19085);                    // Black Dragonscale Breastplate
+            pPlayer->removeSpell(19107);                    // Black Dragonscale Leggings
+            pPlayer->removeSpell(19094);                    // Black Dragonscale Shoulders
+            pPlayer->removeSpell(19077);                    // Black Dragonscale Breastplate
+            pPlayer->removeSpell(24654);                    // Blue Dragonscale Leggings
+            pPlayer->removeSpell(19089);                    // Blue Dragonscale Shoulders
+            pPlayer->removeSpell(10650);                    // Dragonscale Breastplate
+            pPlayer->removeSpell(10619);                    // Dragonscale Gauntlets
+            pPlayer->removeSpell(19050);                    // Green Dragonscale Breastplate
+            pPlayer->removeSpell(24655);                    // Green Dragonscale Gauntlets
+            pPlayer->removeSpell(19060);                    // Green Dragonscale Leggings
+            pPlayer->removeSpell(19054);                    // Red Dragonscale Breastplate
             break;
         case 36328:                                         // S_UNLEARN_ELEMENTAL
             pPlayer->removeSpell(36074);                    // Blackstorm Leggings
@@ -319,7 +326,7 @@ bool GossipHello_npc_prof_blacksmith(Player* pPlayer, Creature* pCreature)
 
     uint32 eCreature = pCreature->GetEntry();
     // WEAPONSMITH & ARMORSMITH
-    if (pPlayer->GetBaseSkillValue(SKILL_BLACKSMITHING) >= 225)
+    if (pPlayer->GetBaseSkillValue(SKILL_BLACKSMITHING) >= 200)
     {
         switch (eCreature)
         {
@@ -343,7 +350,7 @@ bool GossipHello_npc_prof_blacksmith(Player* pPlayer, Creature* pCreature)
         }
     }
     // WEAPONSMITH SPEC
-    if (pPlayer->HasSpell(S_WEAPON) && pPlayer->getLevel() > 49 && pPlayer->GetBaseSkillValue(SKILL_BLACKSMITHING) >= 250)
+    if (pPlayer->HasSpell(S_WEAPON) && pPlayer->getLevel() > 40 && pPlayer->GetBaseSkillValue(SKILL_BLACKSMITHING) >= 200)
     {
         switch (eCreature)
         {
@@ -606,7 +613,7 @@ bool GossipHello_npc_prof_leather(Player* pPlayer, Creature* pCreature)
 
     uint32 eCreature = pCreature->GetEntry();
 
-    if (pPlayer->HasSkill(SKILL_LEATHERWORKING) && pPlayer->GetBaseSkillValue(SKILL_LEATHERWORKING) >= 250 && pPlayer->getLevel() > 49)
+    if (pPlayer->HasSkill(SKILL_LEATHERWORKING) && pPlayer->GetBaseSkillValue(SKILL_LEATHERWORKING) >= 200 && pPlayer->getLevel() > 40)
     {
         switch (eCreature)
         {
