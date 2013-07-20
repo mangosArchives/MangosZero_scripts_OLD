@@ -90,6 +90,9 @@ there is no difference here (except that default text is chosen with `gameobject
 
 /*###
 # spells defines
+# The spells for S_UNLEARN_* earlier were Forget spells which are not available in zero, as
+# such we could probably remove these defines and use the S_* instead as they seem to have the
+# correct spell ids (ie: S_WEAPON == S_UNLEARN_WEAPON)
 ###*/
 
 #define S_WEAPON                9787
@@ -104,11 +107,11 @@ there is no difference here (except that default text is chosen with `gameobject
 #define S_LEARN_AXE             39098
 #define S_LEARN_SWORD           39097
 
-#define S_UNLEARN_WEAPON        36436
-#define S_UNLEARN_ARMOR         36435
-#define S_UNLEARN_HAMMER        36441
-#define S_UNLEARN_AXE           36439
-#define S_UNLEARN_SWORD         36438
+#define S_UNLEARN_WEAPON        9787
+#define S_UNLEARN_ARMOR         9788
+#define S_UNLEARN_HAMMER        17040
+#define S_UNLEARN_AXE           17041
+#define S_UNLEARN_SWORD         17039
 
 #define S_REP_ARMOR             17451
 #define S_REP_WEAPON            17452
@@ -127,16 +130,18 @@ there is no difference here (except that default text is chosen with `gameobject
 #define S_LEARN_ELEMENTAL       10659
 #define S_LEARN_TRIBAL          10661
 
-#define S_UNLEARN_DRAGON        10656// 36434 - Forget dragonscale LW was used before, this is not
-                                     // available in wow 1.12
-#define S_UNLEARN_ELEMENTAL     36328
-#define S_UNLEARN_TRIBAL        36433
+#define S_UNLEARN_DRAGON        10656
+#define S_UNLEARN_ELEMENTAL     10658
+#define S_UNLEARN_TRIBAL        10660
 
 #define S_GOBLIN                20222
 #define S_GNOMISH               20219
 
 #define S_LEARN_GOBLIN          20221
 #define S_LEARN_GNOMISH         20220
+
+#define S_UNLEARN_GOBLIN        20222
+#define S_UNLEARN_GNOMISH       20219
 
 /*###
 # formulas to calculate unlearning cost
@@ -207,100 +212,38 @@ bool EquippedOk(Player* pPlayer, uint32 spellId)
 
 void ProfessionUnlearnSpells(Player* pPlayer, uint32 type)
 {
-    switch (type)
+    std::stringstream ssQuery;
+    //this query finds all spells that require the given profession specialization via type
+    //spellid_1 is the spell that we'll learn from this as there's almost always only recipes
+    //that teach you things
+    //TODO: This needs to be checked, can you learn specialization spells from other things
+    //than recipes?
+    ssQuery << "SELECT spellid_1 FROM item_template WHERE requiredspell=" << type << ";";
+    pPlayer->removeSpell(type); //this is the profession specific spell, ie: elemental LW
+    
+    QueryResult* result = WorldDatabase.Query(ssQuery.str().c_str());
+    if (result)
     {
-        case 36436:                                         // S_UNLEARN_WEAPON
-            pPlayer->removeSpell(36125);                    // Light Earthforged Blade
-            pPlayer->removeSpell(36128);                    // Light Emberforged Hammer
-            pPlayer->removeSpell(36126);                    // Light Skyforged Axe
-            break;
-        case 36435:                                         // S_UNLEARN_ARMOR
-            pPlayer->removeSpell(36122);                    // Earthforged Leggings
-            pPlayer->removeSpell(36129);                    // Heavy Earthforged Breastplate
-            pPlayer->removeSpell(36130);                    // Stormforged Hauberk
-            pPlayer->removeSpell(34533);                    // Breastplate of Kings
-            pPlayer->removeSpell(34529);                    // Nether Chain Shirt
-            pPlayer->removeSpell(34534);                    // Bulwark of Kings
-            pPlayer->removeSpell(36257);                    // Bulwark of the Ancient Kings
-            pPlayer->removeSpell(36256);                    // Embrace of the Twisting Nether
-            pPlayer->removeSpell(34530);                    // Twisting Nether Chain Shirt
-            pPlayer->removeSpell(36124);                    // Windforged Leggings
-            break;
-        case 36441:                                         // S_UNLEARN_HAMMER
-            pPlayer->removeSpell(36262);                    // Dragonstrike
-            pPlayer->removeSpell(34546);                    // Dragonmaw
-            pPlayer->removeSpell(34545);                    // Drakefist Hammer
-            pPlayer->removeSpell(36136);                    // Lavaforged Warhammer
-            pPlayer->removeSpell(34547);                    // Thunder
-            pPlayer->removeSpell(34567);                    // Deep Thunder
-            pPlayer->removeSpell(36263);                    // Stormherald
-            pPlayer->removeSpell(36137);                    // Great Earthforged Hammer
-            break;
-        case 36439:                                         // S_UNLEARN_AXE
-            pPlayer->removeSpell(36260);                    // Wicked Edge of the Planes
-            pPlayer->removeSpell(34562);                    // Black Planar Edge
-            pPlayer->removeSpell(34541);                    // The Planar Edge
-            pPlayer->removeSpell(36134);                    // Stormforged Axe
-            pPlayer->removeSpell(36135);                    // Skyforged Great Axe
-            pPlayer->removeSpell(36261);                    // Bloodmoon
-            pPlayer->removeSpell(34543);                    // Lunar Crescent
-            pPlayer->removeSpell(34544);                    // Mooncleaver
-            break;
-        case 36438:                                         // S_UNLEARN_SWORD
-            pPlayer->removeSpell(36258);                    // Blazefury
-            pPlayer->removeSpell(34537);                    // Blazeguard
-            pPlayer->removeSpell(34535);                    // Fireguard
-            pPlayer->removeSpell(36131);                    // Windforged Rapier
-            pPlayer->removeSpell(36133);                    // Stoneforged Claymore
-            pPlayer->removeSpell(34538);                    // Lionheart Blade
-            pPlayer->removeSpell(34540);                    // Lionheart Champion
-            pPlayer->removeSpell(36259);                    // Lionheart Executioner
-            break;
-        case S_UNLEARN_DRAGON:                              // S_UNLEARN_DRAGON
-            pPlayer->removeSpell(S_UNLEARN_DRAGON);         // The actual dragonscale making spell/prof
-            pPlayer->removeSpell(20855);                    // Black Dragonscale Boots
-            pPlayer->removeSpell(19085);                    // Black Dragonscale Breastplate
-            pPlayer->removeSpell(19107);                    // Black Dragonscale Leggings
-            pPlayer->removeSpell(19094);                    // Black Dragonscale Shoulders
-            pPlayer->removeSpell(19077);                    // Black Dragonscale Breastplate
-            pPlayer->removeSpell(24654);                    // Blue Dragonscale Leggings
-            pPlayer->removeSpell(19089);                    // Blue Dragonscale Shoulders
-            pPlayer->removeSpell(10650);                    // Dragonscale Breastplate
-            pPlayer->removeSpell(10619);                    // Dragonscale Gauntlets
-            pPlayer->removeSpell(19050);                    // Green Dragonscale Breastplate
-            pPlayer->removeSpell(24655);                    // Green Dragonscale Gauntlets
-            pPlayer->removeSpell(19060);                    // Green Dragonscale Leggings
-            pPlayer->removeSpell(19054);                    // Red Dragonscale Breastplate
-            break;
-        case 36328:                                         // S_UNLEARN_ELEMENTAL
-            pPlayer->removeSpell(36074);                    // Blackstorm Leggings
-            pPlayer->removeSpell(36077);                    // Primalstorm Breastplate
-            pPlayer->removeSpell(35590);                    // Primalstrike Belt
-            pPlayer->removeSpell(35591);                    // Primalstrike Bracers
-            pPlayer->removeSpell(35589);                    // Primalstrike Vest
-            break;
-        case 36433:                                         // S_UNLEARN_TRIBAL
-            pPlayer->removeSpell(35585);                    // Windhawk Hauberk
-            pPlayer->removeSpell(35587);                    // Windhawk Belt
-            pPlayer->removeSpell(35588);                    // Windhawk Bracers
-            pPlayer->removeSpell(36075);                    // Wildfeather Leggings
-            pPlayer->removeSpell(36078);                    // Living Crystal Breastplate
-            break;
-        case 41299:                                         // S_UNLEARN_SPELLFIRE
-            pPlayer->removeSpell(26752);                    // Spellfire Belt
-            pPlayer->removeSpell(26753);                    // Spellfire Gloves
-            pPlayer->removeSpell(26754);                    // Spellfire Robe
-            break;
-        case 41558:                                         // S_UNLEARN_MOONCLOTH
-            pPlayer->removeSpell(26760);                    // Primal Mooncloth Belt
-            pPlayer->removeSpell(26761);                    // Primal Mooncloth Shoulders
-            pPlayer->removeSpell(26762);                    // Primal Mooncloth Robe
-            break;
-        case 41559:                                         // S_UNLEARN_SHADOWEAVE
-            pPlayer->removeSpell(26756);                    // Frozen Shadoweave Shoulders
-            pPlayer->removeSpell(26757);                    // Frozen Shadoweave Boots
-            pPlayer->removeSpell(26758);                    // Frozen Shadoweave Robe
-            break;
+        do
+        {
+            Field* fields = result->Fetch();
+            uint32 spellId = fields[0].GetUInt32();
+            
+            SpellEntry const* unlearnSpell = GetSpellStore()->LookupEntry(spellId);
+            if (!unlearnSpell)
+                continue;
+                    
+            if (unlearnSpell->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_LEARN_SPELL)
+                pPlayer->removeSpell(unlearnSpell->EffectTriggerSpell[EFFECT_INDEX_0]);
+        }
+        while(result->NextRow());
+        
+        delete result;
+    }
+    else
+    {
+        sLog.outString();
+        sLog.outErrorDb("Can't find any spells to unlearn for specialized profession %u", type);
     }
 }
 
