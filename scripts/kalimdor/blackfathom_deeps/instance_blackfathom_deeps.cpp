@@ -27,6 +27,7 @@ EndScriptData */
 /* Encounter 0 = Twilight Lord Kelris
    Encounter 1 = Shrine event
    Must kill twilight lord for shrine event to be possible
+   Encounter 3 = Baron Aquanis
  */
 
 instance_blackfathom_deeps::instance_blackfathom_deeps(Map* pMap) : ScriptedInstance(pMap),
@@ -125,7 +126,12 @@ void instance_blackfathom_deeps::SetData(uint32 uiType, uint32 uiData)
             else if (uiData == DONE)
                 DoUseDoorOrButton(GO_PORTAL_DOOR);
             break;
-    }
+        case TYPE_STONE:
+            if (m_auiEncounter[2] != DONE && uiData == DONE)
+                m_auiEncounter[2] = uiData;
+            break;
+
+	}
 
     if (uiData == DONE)
     {
@@ -133,7 +139,7 @@ void instance_blackfathom_deeps::SetData(uint32 uiType, uint32 uiData)
 
         std::ostringstream saveStream;
 
-        saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1];
+        saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2];
 
         m_strInstData = saveStream.str();
         SaveToDB();
@@ -147,6 +153,7 @@ uint32 instance_blackfathom_deeps::GetData(uint32 uiType) const
     {
         case TYPE_KELRIS: return m_auiEncounter[0];
         case TYPE_SHRINE: return m_auiEncounter[1];
+		case TYPE_STONE: return m_auiEncounter[2];
         default:
             return 0;
     }
@@ -163,7 +170,7 @@ void instance_blackfathom_deeps::Load(const char* chrIn)
     OUT_LOAD_INST_DATA(chrIn);
 
     std::istringstream loadStream(chrIn);
-    loadStream >> m_auiEncounter[0] >> m_auiEncounter[1];
+    loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2];
 
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
@@ -262,6 +269,26 @@ bool GOUse_go_fire_of_akumai(Player* /*pPlayer*/, GameObject* pGo)
     return true;
 }
 
+/*######
+## go_fathom_stone
+######*/
+
+bool GOUse_go_fathom_stone(Player* pPlayer, GameObject* pGo)
+{
+    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+
+    if (!pInstance)
+        return false;
+
+    if (pInstance->GetData(TYPE_STONE) == DONE)
+        return false;
+
+    else
+        pPlayer->SummonCreature(NPC_BARON_AQUANIS, -782.21f, -63.26f, -42.43f, 2.36f, TEMPSUMMON_TIMED_OOC_DESPAWN, 120000);
+        pInstance->SetData(TYPE_STONE, DONE);
+		return true;
+}
+
 void AddSC_instance_blackfathom_deeps()
 {
     Script* pNewScript;
@@ -274,5 +301,10 @@ void AddSC_instance_blackfathom_deeps()
     pNewScript = new Script;
     pNewScript->Name = "go_fire_of_akumai";
     pNewScript->pGOUse = &GOUse_go_fire_of_akumai;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "go_fathom_stone";
+    pNewScript->pGOUse = &GOUse_go_fathom_stone;
     pNewScript->RegisterSelf();
 }
