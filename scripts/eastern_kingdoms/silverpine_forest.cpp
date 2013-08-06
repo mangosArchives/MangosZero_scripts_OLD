@@ -51,14 +51,54 @@ enum
 
     QUEST_ERLAND        = 435,
     NPC_RANE            = 1950,
-    NPC_QUINN           = 1951
+    NPC_QUINN           = 1951,
+
+    PHASE_RANE          = 0,
+    PHASE_QUINN         = 1
+
 };
 
 struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
 {
-    npc_deathstalker_erlandAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
+    npc_deathstalker_erlandAI(Creature* pCreature) : npc_escortAI(pCreature)
+	{
+		lCreatureList.clear();
+        m_uiPhase = 0;
+        m_uiPhaseCounter = 0;
+        Reset();
 
-    void WaypointReached(uint32 i) override
+	}
+    std::list<Creature*> lCreatureList;
+
+    uint32 m_uiPhase;
+    uint32 m_uiPhaseCounter;
+    uint32 m_uiGlobalTimer;
+
+
+    void MoveInLineOfSight(Unit* pWho) override
+    {
+        if (HasEscortState(STATE_ESCORT_ESCORTING) && pWho->GetEntry() == NPC_QUINN || NPC_RANE)
+			lCreatureList.push_back((Creature*)pWho);
+
+        npc_escortAI::MoveInLineOfSight(pWho);
+    }
+
+    Creature* GetCreature(uint32 uiCreatureEntry)
+    {
+        if (!lCreatureList.empty())
+        {
+            for (std::list<Creature*>::iterator itr = lCreatureList.begin(); itr != lCreatureList.end(); ++itr)
+            {
+                if ((*itr)->GetEntry() == uiCreatureEntry && (*itr)->isAlive())
+                    return (*itr);
+            }
+        }
+
+        return NULL;
+    }
+
+	
+	void WaypointReached(uint32 i) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -70,42 +110,102 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
             case 0:
                 DoScriptText(SAY_START_2, m_creature, pPlayer);
                 break;
-            case 13:
-                DoScriptText(SAY_END, m_creature, pPlayer);
+			case 13:
+               switch (urand(0, 1))
+			   {
+			        case 0: DoScriptText(SAY_END, m_creature, pPlayer); break;
+			        case 1: DoScriptText(SAY_PROGRESS, m_creature); break;
+			   }
                 pPlayer->GroupEventHappens(QUEST_ERLAND, m_creature);
-                break;
-            case 14:
-                if (Creature* pRane = GetClosestCreatureWithEntry(m_creature, NPC_RANE, 45.0f))
-                    DoScriptText(SAY_RANE, pRane, m_creature);
-                break;
-            case 15:
-                DoScriptText(SAY_RANE_REPLY, m_creature);
+	            m_creature->SetWalk(false);
                 break;
             case 16:
-                DoScriptText(SAY_CHECK_NEXT, m_creature);
-                break;
-            case 24:
-                DoScriptText(SAY_QUINN, m_creature);
+	            m_creature->SetWalk(true);
+				SetEscortPaused(true);
                 break;
             case 25:
-                if (Creature* pQuinn = GetClosestCreatureWithEntry(m_creature, NPC_QUINN, 45.0f))
-                    DoScriptText(SAY_QUINN_REPLY, pQuinn, m_creature);
-                break;
-            case 26:
-                DoScriptText(SAY_BYE, m_creature);
-                break;
+				SetEscortPaused(true);
+				break;
         }
     }
 
+    void UpdateEscortAI(const uint32 uiDiff) override
+    {
+        if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
+            if (HasEscortState(STATE_ESCORT_PAUSED))
+            {
+                if (m_uiGlobalTimer < uiDiff)
+                {
+                    m_uiGlobalTimer = 5000;
+
+                    switch (m_uiPhase)
+                    {
+                        case PHASE_RANE:
+                        {
+                            switch (m_uiPhaseCounter)
+                            {
+                                case 0:
+                                    if (Creature* pRane = GetCreature(NPC_RANE))
+                                        DoScriptText(SAY_RANE, pRane);
+                                    break;
+                                case 1:
+                                        DoScriptText(SAY_RANE_REPLY, m_creature);
+                                    break;
+                                case 2:
+                                    DoScriptText(SAY_CHECK_NEXT, m_creature);
+                                    break;
+                                case 3:
+					                SetEscortPaused(false);
+									m_uiPhase = PHASE_QUINN;
+									break;
+							}
+                            break;
+                        }
+                        case PHASE_QUINN:
+                        {
+                            switch (m_uiPhaseCounter)
+                            {
+                                case 4:
+                                        DoScriptText(SAY_QUINN, m_creature);
+                                    break;
+                                case 5:
+                                    if (Creature* pQuinn = GetCreature(NPC_QUINN))
+                                        DoScriptText(SAY_QUINN_REPLY, pQuinn);
+                                    break;
+                                case 6:
+                                        DoScriptText(SAY_BYE, m_creature);
+                                    break;
+								case 7:
+			                            SetEscortPaused(false);
+									break;
+                            }
+                            break;
+                        }
+                    }
+                        ++m_uiPhaseCounter;
+                }
+                else
+                    m_uiGlobalTimer -= uiDiff;
+            }
+
+            return;
+        }
+
+        DoMeleeAttackIfReady();
+    }
+
+
+
     void Reset() override {}
 
-    void Aggro(Unit* who) override
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
-            case 0: DoScriptText(SAY_AGGRO_1, m_creature, who); break;
-            case 1: DoScriptText(SAY_AGGRO_2, m_creature, who); break;
-            case 2: DoScriptText(SAY_AGGRO_3, m_creature, who); break;
+            case 0: DoScriptText(SAY_AGGRO_1, m_creature,pWho); break;
+            case 1: DoScriptText(SAY_AGGRO_2, m_creature); break;
+            case 2: DoScriptText(SAY_AGGRO_3, m_creature,pWho); break;
         }
     }
 };
