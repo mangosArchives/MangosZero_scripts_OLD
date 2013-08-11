@@ -282,11 +282,11 @@ bool GOUse_go_fathom_stone(Player* pPlayer, GameObject* pGo)
 
     if (pInstance->GetData(TYPE_STONE) == DONE)
         return false;
-
     else
         pPlayer->SummonCreature(NPC_BARON_AQUANIS, -782.21f, -63.26f, -42.43f, 2.36f, TEMPSUMMON_TIMED_OOC_DESPAWN, 120000);
-        pInstance->SetData(TYPE_STONE, DONE);
-		return true;
+
+    pInstance->SetData(TYPE_STONE, DONE);
+    return true;
 }
 
 void AddSC_instance_blackfathom_deeps()

@@ -150,8 +150,15 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
 {
     npc_piznikAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
-        m_uiNormFaction = pCreature->getFaction();	
-		Reset();
+        m_uiPlayerGUID  = 0;
+        m_bEventStarted = false;
+        m_uiWaveTimer   = 60000;  // One minute until first Wave
+        m_uiEventTimer  = 420000; // 7 minutes Event time
+        m_uiSummonCount = 0;
+        m_uiNormFaction = pCreature->getFaction();
+        m_uiWaveCount   = 0;
+        m_uiMoveCount   = 0;
+        Reset();
 	}
 
     void Reset()
