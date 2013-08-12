@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
         {
             for (std::list<Creature*>::iterator itr = lCreatureList.begin(); itr != lCreatureList.end(); ++itr)
             {
-                if ((*itr)->GetEntry() == uiCreatureEntry && (*itr)->isAlive())
+                if ((*itr)->GetEntry() == uiCreatureEntry && (*itr)->IsAlive())
                     return (*itr);
             }
         }
