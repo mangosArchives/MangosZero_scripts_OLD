@@ -205,7 +205,7 @@ struct MANGOS_DLL_DECL npc_snufflenose_gopherAI : public ScriptedPetAI
         // Always need to find new ones
         for (std::list<GameObject*>::const_iterator itr = lTubbersInRange.begin(); itr != lTubbersInRange.end(); ++itr)
         {
-            if (!(*itr)->isSpawned() && (*itr)->HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND) && (*itr)->IsWithinLOSInMap(m_creature))
+            if (!(*itr)->isSpawned() && (*itr)->HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_INTERACT_COND) && (*itr)->IsWithinLOSInMap(m_creature) && (*itr)->GetDistanceZ(m_creature) <= 6.0f )
             {
                 pNearestTubber = *itr;
                 break;
