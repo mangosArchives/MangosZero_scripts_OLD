@@ -44,11 +44,15 @@ void instance_uldaman::OnObjectCreate(GameObject* pGo)
         case GO_TEMPLE_DOOR_UPPER:
         case GO_TEMPLE_DOOR_LOWER:
             if (GetData(TYPE_ALTAR_EVENT) == DONE)
+            {
                 pGo->SetGoState(GO_STATE_ACTIVE);
+            }
             break;
         case GO_ANCIENT_VAULT:
             if (GetData(TYPE_ARCHAEDAS) == DONE)
+            {
                 pGo->SetGoState(GO_STATE_ACTIVE);
+            }
             break;
         case GO_ANCIENT_TREASURE:
             break;
@@ -141,7 +145,9 @@ void instance_uldaman::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
+        {
             m_auiEncounter[i] = NOT_STARTED;
+        }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
@@ -187,12 +193,16 @@ void instance_uldaman::StartEvent(uint32 uiEventId, Player* pPlayer)
     if (uiEventId == EVENT_ID_ALTAR_KEEPER)
     {
         if (GetData(TYPE_ALTAR_EVENT) == NOT_STARTED)
+        {
             SetData(TYPE_ALTAR_EVENT, IN_PROGRESS);
+        }
     }
     else if (uiEventId == EVENT_ID_ALTAR_ARCHAEDAS)
     {
         if (GetData(TYPE_ARCHAEDAS) == NOT_STARTED || GetData(TYPE_ARCHAEDAS) == FAIL)
+        {
             SetData(TYPE_ARCHAEDAS, SPECIAL);
+        }
     }
 }
 
@@ -210,7 +220,9 @@ void instance_uldaman::DoResetKeeperEvent()
         if (Creature* pKeeper = instance->GetCreature(*itr))
         {
             if (!pKeeper->IsAlive())
+            {
                 pKeeper->Respawn();
+            }
         }
     }
 }
@@ -224,11 +236,15 @@ Creature* instance_uldaman::GetClosestDwarfNotInCombat(Creature* pSearcher)
         Creature* pTemp = instance->GetCreature(*itr);
 
         if (pTemp && pTemp->IsAlive() && !pTemp->getVictim())
+        {
             lTemp.push_back(pTemp);
+        }
     }
 
     if (lTemp.empty())
+    {
         return NULL;
+    }
 
     lTemp.sort(ObjectDistanceOrder(pSearcher));
     return lTemp.front();
@@ -238,7 +254,9 @@ void instance_uldaman::OnCreatureEvade(Creature* pCreature)
 {
     // Reset Altar event
     if (pCreature->GetEntry() == NPC_STONE_KEEPER)
+    {
         SetData(TYPE_ALTAR_EVENT, NOT_STARTED);
+    }
 }
 
 void instance_uldaman::OnCreatureDeath(Creature* pCreature)
@@ -248,19 +266,27 @@ void instance_uldaman::OnCreatureDeath(Creature* pCreature)
         ++m_uiStoneKeepersFallen;
 
         if (m_lKeepers.size() == m_uiStoneKeepersFallen)
+        {
             SetData(TYPE_ALTAR_EVENT, DONE);
+        }
         else
+        {
             m_uiKeeperCooldown = 5000;
+        }
     }
 }
 
 void instance_uldaman::Update(uint32 uiDiff)
 {
     if (GetData(TYPE_ALTAR_EVENT) != IN_PROGRESS)
+    {
         return;
+    }
 
     if (!m_uiKeeperCooldown)
+    {
         return;
+    }
 
     if (m_uiKeeperCooldown <= uiDiff)
     {
@@ -269,7 +295,9 @@ void instance_uldaman::Update(uint32 uiDiff)
             // Get Keeper which is alive and out of combat
             Creature* pKeeper = instance->GetCreature(*itr);
             if (!pKeeper || !pKeeper->IsAlive() || pKeeper->getVictim())
+            {
                 continue;
+            }
 
             // Get starter player for attack
             Player* pPlayer = pKeeper->GetMap()->GetPlayer(m_playerGuid);
@@ -293,7 +321,9 @@ void instance_uldaman::Update(uint32 uiDiff)
         m_uiKeeperCooldown = 0;
     }
     else
+    {
         m_uiKeeperCooldown -= uiDiff;
+    }
 }
 
 InstanceData* GetInstanceData_instance_uldaman(Map* pMap)

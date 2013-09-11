@@ -61,13 +61,13 @@ enum
 struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
 {
     npc_deathstalker_erlandAI(Creature* pCreature) : npc_escortAI(pCreature)
-	{
-		lCreatureList.clear();
+    {
+        lCreatureList.clear();
         m_uiPhase = 0;
         m_uiPhaseCounter = 0;
         Reset();
 
-	}
+    }
     std::list<Creature*> lCreatureList;
 
     uint32 m_uiPhase;
@@ -78,7 +78,9 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
     void MoveInLineOfSight(Unit* pWho) override
     {
         if (HasEscortState(STATE_ESCORT_ESCORTING) && (pWho->GetEntry() == NPC_QUINN || NPC_RANE))
-			lCreatureList.push_back((Creature*)pWho);
+        {
+            lCreatureList.push_back((Creature*)pWho);
+        }
 
         npc_escortAI::MoveInLineOfSight(pWho);
     }
@@ -90,42 +92,50 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
             for (std::list<Creature*>::iterator itr = lCreatureList.begin(); itr != lCreatureList.end(); ++itr)
             {
                 if ((*itr)->GetEntry() == uiCreatureEntry && (*itr)->IsAlive())
+                {
                     return (*itr);
+                }
             }
         }
 
         return NULL;
     }
 
-	
-	void WaypointReached(uint32 i) override
+
+    void WaypointReached(uint32 i) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
         if (!pPlayer)
+        {
             return;
+        }
 
         switch (i)
         {
             case 0:
                 DoScriptText(SAY_START_2, m_creature, pPlayer);
                 break;
-			case 13:
-               switch (urand(0, 1))
-			   {
-			        case 0: DoScriptText(SAY_END, m_creature, pPlayer); break;
-			        case 1: DoScriptText(SAY_PROGRESS, m_creature); break;
-			   }
+            case 13:
+                switch (urand(0, 1))
+                {
+                    case 0:
+                        DoScriptText(SAY_END, m_creature, pPlayer);
+                        break;
+                    case 1:
+                        DoScriptText(SAY_PROGRESS, m_creature);
+                        break;
+                }
                 pPlayer->GroupEventHappens(QUEST_ERLAND, m_creature);
-	            m_creature->SetWalk(false);
+                m_creature->SetWalk(false);
                 break;
             case 16:
-	            m_creature->SetWalk(true);
-				SetEscortPaused(true);
+                m_creature->SetWalk(true);
+                SetEscortPaused(true);
                 break;
             case 25:
-				SetEscortPaused(true);
-				break;
+                SetEscortPaused(true);
+                break;
         }
     }
 
@@ -147,19 +157,21 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
                             {
                                 case 0:
                                     if (Creature* pRane = GetCreature(NPC_RANE))
+                                    {
                                         DoScriptText(SAY_RANE, pRane);
+                                    }
                                     break;
                                 case 1:
-                                        DoScriptText(SAY_RANE_REPLY, m_creature);
+                                    DoScriptText(SAY_RANE_REPLY, m_creature);
                                     break;
                                 case 2:
                                     DoScriptText(SAY_CHECK_NEXT, m_creature);
                                     break;
                                 case 3:
-					                SetEscortPaused(false);
-									m_uiPhase = PHASE_QUINN;
-									break;
-							}
+                                    SetEscortPaused(false);
+                                    m_uiPhase = PHASE_QUINN;
+                                    break;
+                            }
                             break;
                         }
                         case PHASE_QUINN:
@@ -167,26 +179,30 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
                             switch (m_uiPhaseCounter)
                             {
                                 case 4:
-                                        DoScriptText(SAY_QUINN, m_creature);
+                                    DoScriptText(SAY_QUINN, m_creature);
                                     break;
                                 case 5:
                                     if (Creature* pQuinn = GetCreature(NPC_QUINN))
+                                    {
                                         DoScriptText(SAY_QUINN_REPLY, pQuinn);
+                                    }
                                     break;
                                 case 6:
-                                        DoScriptText(SAY_BYE, m_creature);
+                                    DoScriptText(SAY_BYE, m_creature);
                                     break;
-								case 7:
-			                            SetEscortPaused(false);
-									break;
+                                case 7:
+                                    SetEscortPaused(false);
+                                    break;
                             }
                             break;
                         }
                     }
-                        ++m_uiPhaseCounter;
+                    ++m_uiPhaseCounter;
                 }
                 else
+                {
                     m_uiGlobalTimer -= uiDiff;
+                }
             }
 
             return;
@@ -203,9 +219,15 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
     {
         switch (urand(0, 2))
         {
-            case 0: DoScriptText(SAY_AGGRO_1, m_creature,pWho); break;
-            case 1: DoScriptText(SAY_AGGRO_2, m_creature); break;
-            case 2: DoScriptText(SAY_AGGRO_3, m_creature,pWho); break;
+            case 0:
+                DoScriptText(SAY_AGGRO_1, m_creature, pWho);
+                break;
+            case 1:
+                DoScriptText(SAY_AGGRO_2, m_creature);
+                break;
+            case 2:
+                DoScriptText(SAY_AGGRO_3, m_creature, pWho);
+                break;
         }
     }
 };
@@ -217,7 +239,9 @@ bool QuestAccept_npc_deathstalker_erland(Player* pPlayer, Creature* pCreature, c
         DoScriptText(SAY_START_1, pCreature);
 
         if (npc_deathstalker_erlandAI* pEscortAI = dynamic_cast<npc_deathstalker_erlandAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return true;
 }
@@ -303,14 +327,14 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
     bool   m_bEventStarted;
     bool   m_bWaveDied;
 
-void JustRespawned()
-{
-    m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER); // Reseting flags on respawn in case questgiver died durin event
-	Reset();
-}
+    void JustRespawned()
+    {
+        m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER); // Reseting flags on respawn in case questgiver died durin event
+        Reset();
+    }
 
 
-	void StartEvent(uint64 uiPlayerGUID)
+    void StartEvent(uint64 uiPlayerGUID)
     {
         m_creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
 
@@ -320,7 +344,7 @@ void JustRespawned()
         m_uiWaveTimer    = 10000;
         m_uiSummonCount  = 0;
         m_uiWaveCount    = 0;
-		m_uiRunbackTimer = 0;
+        m_uiRunbackTimer = 0;
         m_uiMoveCount    = 0;
     }
 
@@ -334,7 +358,9 @@ void JustRespawned()
     void JustDied(Unit* pKiller)
     {
         if (Player* pPlayer = (m_creature->GetMap()->GetPlayer(m_uiPlayerGUID)))
+        {
             pPlayer->SendQuestFailed(QUEST_PYREWOOD_AMBUSH);
+        }
 
         FinishEvent();
     }
@@ -346,8 +372,8 @@ void JustRespawned()
         // Get waypoint for each creature
         pSummoned->GetMotionMaster()->MovePoint(0, MovePointspy[m_uiMoveCount].fX, MovePointspy[m_uiMoveCount].fY, MovePointspy[m_uiMoveCount].fZ);
 
-		++m_uiMoveCount;
-	}
+        ++m_uiMoveCount;
+    }
 
     void SummonedCreatureJustDied(Creature* pKilled)
     {
@@ -356,7 +382,7 @@ void JustRespawned()
         if (!m_uiSummonCount)
         {
             m_uiRunbackTimer = 3000;  //without timer creature is in evade state running to start point and do not drink potion
-			m_bWaveDied = true;
+            m_bWaveDied = true;
         }
     }
 
@@ -367,11 +393,13 @@ void JustRespawned()
             DoScriptText(SAY_COMPLETED, m_creature);
             m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
             if (Player* pPlayer = (m_creature->GetMap()->GetPlayer(m_uiPlayerGUID)))
+            {
                 pPlayer->GroupEventHappens(QUEST_PYREWOOD_AMBUSH, m_creature);
+            }
 
             FinishEvent();
         }
-		
+
 
         if (m_bEventStarted && m_bWaveDied && m_uiRunbackTimer < uiDiff && m_uiWaveCount <= 3)
         {
@@ -386,45 +414,49 @@ void JustRespawned()
             {
                 switch (m_uiWaveCount)
                 {
-                case 0:
-                    m_creature->SummonCreature(NPC_COUNCILMAN_SMITHERS,  SpawnPoints[0].fX, SpawnPoints[0].fY, SpawnPoints[0].fZ, SpawnPoints[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_uiWaveTimer = 10000;
-                    m_uiMoveCount = 0;
-                    break;
-                case 1:
-                    m_creature->SummonCreature(NPC_COUNCILMAN_THATHER,   SpawnPoints[2].fX, SpawnPoints[2].fY, SpawnPoints[2].fZ, SpawnPoints[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_creature->SummonCreature(NPC_COUNCILMAN_HENDRICKS, SpawnPoints[1].fX, SpawnPoints[1].fY, SpawnPoints[1].fZ, SpawnPoints[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_uiWaveTimer = 10000;
-                    m_uiMoveCount = 0;
-                    break;
-                case 2:
-                    m_creature->SummonCreature(NPC_COUNCILMAN_HARTIN,    SpawnPoints[0].fX, SpawnPoints[0].fY, SpawnPoints[0].fZ, SpawnPoints[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_creature->SummonCreature(NPC_COUNCILMAN_WILHELM,   SpawnPoints[1].fX, SpawnPoints[1].fY, SpawnPoints[1].fZ, SpawnPoints[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_creature->SummonCreature(NPC_COUNCILMAN_HIGARTH,   SpawnPoints[2].fX, SpawnPoints[2].fY, SpawnPoints[2].fZ, SpawnPoints[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_uiWaveTimer = 8000;
-                    m_uiMoveCount = 0;
-                    break;
-                case 3:
-                    m_creature->SummonCreature(NPC_LORD_MAYOR_MORRISON,  SpawnPoints[0].fX, SpawnPoints[0].fY, SpawnPoints[0].fZ, SpawnPoints[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_creature->SummonCreature(NPC_COUNCILMAN_COOPER,    SpawnPoints[1].fX, SpawnPoints[1].fY, SpawnPoints[1].fZ, SpawnPoints[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_creature->SummonCreature(NPC_COUNCILMAN_BRUNSWICK, SpawnPoints[2].fX, SpawnPoints[2].fY, SpawnPoints[2].fZ, SpawnPoints[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-                    m_uiMoveCount = 0;
-                    break;
-                case 4:
-                    m_uiRunbackTimer -= uiDiff;
-                    return;
+                    case 0:
+                        m_creature->SummonCreature(NPC_COUNCILMAN_SMITHERS,  SpawnPoints[0].fX, SpawnPoints[0].fY, SpawnPoints[0].fZ, SpawnPoints[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_uiWaveTimer = 10000;
+                        m_uiMoveCount = 0;
+                        break;
+                    case 1:
+                        m_creature->SummonCreature(NPC_COUNCILMAN_THATHER,   SpawnPoints[2].fX, SpawnPoints[2].fY, SpawnPoints[2].fZ, SpawnPoints[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_creature->SummonCreature(NPC_COUNCILMAN_HENDRICKS, SpawnPoints[1].fX, SpawnPoints[1].fY, SpawnPoints[1].fZ, SpawnPoints[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_uiWaveTimer = 10000;
+                        m_uiMoveCount = 0;
+                        break;
+                    case 2:
+                        m_creature->SummonCreature(NPC_COUNCILMAN_HARTIN,    SpawnPoints[0].fX, SpawnPoints[0].fY, SpawnPoints[0].fZ, SpawnPoints[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_creature->SummonCreature(NPC_COUNCILMAN_WILHELM,   SpawnPoints[1].fX, SpawnPoints[1].fY, SpawnPoints[1].fZ, SpawnPoints[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_creature->SummonCreature(NPC_COUNCILMAN_HIGARTH,   SpawnPoints[2].fX, SpawnPoints[2].fY, SpawnPoints[2].fZ, SpawnPoints[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_uiWaveTimer = 8000;
+                        m_uiMoveCount = 0;
+                        break;
+                    case 3:
+                        m_creature->SummonCreature(NPC_LORD_MAYOR_MORRISON,  SpawnPoints[0].fX, SpawnPoints[0].fY, SpawnPoints[0].fZ, SpawnPoints[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_creature->SummonCreature(NPC_COUNCILMAN_COOPER,    SpawnPoints[1].fX, SpawnPoints[1].fY, SpawnPoints[1].fZ, SpawnPoints[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_creature->SummonCreature(NPC_COUNCILMAN_BRUNSWICK, SpawnPoints[2].fX, SpawnPoints[2].fY, SpawnPoints[2].fZ, SpawnPoints[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
+                        m_uiMoveCount = 0;
+                        break;
+                    case 4:
+                        m_uiRunbackTimer -= uiDiff;
+                        return;
                 }
 
                 ++m_uiWaveCount;
             }
             else
+            {
                 m_uiWaveTimer -= uiDiff;
+            }
 
             m_uiRunbackTimer -= uiDiff;
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         DoMeleeAttackIfReady();
     }
@@ -437,7 +469,9 @@ bool QuestAccept_npc_deathstalker_faerleia(Player* pPlayer, Creature* pCreature,
         DoScriptText(SAY_START, pCreature, pPlayer);
 
         if (npc_deathstalker_faerleiaAI* pFaerleiaAI = dynamic_cast<npc_deathstalker_faerleiaAI*>(pCreature->AI()))
+        {
             pFaerleiaAI->StartEvent(pPlayer->GetObjectGuid());
+        }
     }
     return true;
 }

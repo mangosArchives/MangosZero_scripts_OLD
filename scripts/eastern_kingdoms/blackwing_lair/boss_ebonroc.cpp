@@ -56,52 +56,66 @@ struct MANGOS_DLL_DECL boss_ebonrocAI : public ScriptedAI
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_EBONROC, IN_PROGRESS);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_EBONROC, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_EBONROC, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Shadow Flame Timer
         if (m_uiShadowFlameTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SHADOW_FLAME) == CAST_OK)
+            {
                 m_uiShadowFlameTimer = urand(12000, 15000);
+            }
         }
         else
-            m_uiShadowFlameTimer -= uiDiff;
+            { m_uiShadowFlameTimer -= uiDiff; }
 
         // Wing Buffet Timer
         if (m_uiWingBuffetTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_WING_BUFFET) == CAST_OK)
+            {
                 m_uiWingBuffetTimer = 25000;
+            }
         }
         else
-            m_uiWingBuffetTimer -= uiDiff;
+            { m_uiWingBuffetTimer -= uiDiff; }
 
         // Shadow of Ebonroc Timer
         if (m_uiShadowOfEbonrocTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_SHADOW_OF_EBONROC) == CAST_OK)
+            {
                 m_uiShadowOfEbonrocTimer = urand(25000, 35000);
+            }
         }
         else
-            m_uiShadowOfEbonrocTimer -= uiDiff;
+            { m_uiShadowOfEbonrocTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

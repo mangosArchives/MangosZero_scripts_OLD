@@ -98,13 +98,21 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
     {
         switch (urand(0, 2))
         {
-            case 0: DoScriptText(SAY_AGGRO1, m_creature); break;
-            case 1: DoScriptText(SAY_AGGRO2, m_creature); break;
-            case 2: DoScriptText(SAY_AGGRO3, m_creature); break;
+            case 0:
+                DoScriptText(SAY_AGGRO1, m_creature);
+                break;
+            case 1:
+                DoScriptText(SAY_AGGRO2, m_creature);
+                break;
+            case 2:
+                DoScriptText(SAY_AGGRO3, m_creature);
+                break;
         }
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_HEIGAN, IN_PROGRESS);
+        }
     }
 
     void KilledUnit(Unit* /*pVictim*/) override
@@ -117,19 +125,25 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_HEIGAN, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_HEIGAN, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiPhase == PHASE_GROUND)
         {
@@ -147,7 +161,9 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
                 }
             }
             else
+            {
                 m_uiPhaseTimer -= uiDiff;
+            }
 
             // Fever
             if (m_uiFeverTimer < uiDiff)
@@ -156,7 +172,9 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
                 m_uiFeverTimer = 21000;
             }
             else
+            {
                 m_uiFeverTimer -= uiDiff;
+            }
 
             // Disruption
             if (m_uiDisruptionTimer < uiDiff)
@@ -165,7 +183,9 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
                 m_uiDisruptionTimer = 10000;
             }
             else
+            {
                 m_uiDisruptionTimer -= uiDiff;
+            }
 
             if (m_uiTeleportTimer < uiDiff)
             {
@@ -183,7 +203,9 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
                 m_uiTeleportTimer = 70000;
             }
             else
+            {
                 m_uiTeleportTimer -= uiDiff;
+            }
 
         }
         else                                                // Platform Phase
@@ -199,7 +221,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
                 return;
             }
             else
-                m_uiPhaseTimer -= uiDiff;
+                { m_uiPhaseTimer -= uiDiff; }
 
             if (m_uiStartChannelingTimer)
             {
@@ -212,7 +234,9 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
                     m_uiStartChannelingTimer = 0;           // no more
                 }
                 else
+                {
                     m_uiStartChannelingTimer -= uiDiff;
+                }
             }
         }
 
@@ -221,21 +245,31 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
         {
             switch (urand(0, 3))
             {
-                case 0: DoScriptText(SAY_TAUNT1, m_creature); break;
-                case 1: DoScriptText(SAY_TAUNT2, m_creature); break;
-                case 2: DoScriptText(SAY_TAUNT3, m_creature); break;
-                case 3: DoScriptText(SAY_TAUNT4, m_creature); break;
+                case 0:
+                    DoScriptText(SAY_TAUNT1, m_creature);
+                    break;
+                case 1:
+                    DoScriptText(SAY_TAUNT2, m_creature);
+                    break;
+                case 2:
+                    DoScriptText(SAY_TAUNT3, m_creature);
+                    break;
+                case 3:
+                    DoScriptText(SAY_TAUNT4, m_creature);
+                    break;
             }
             m_uiTauntTimer = urand(20000, 70000);
         }
         else
-            m_uiTauntTimer -= uiDiff;
+            { m_uiTauntTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
 
         // Handling of the erruptions, this is not related to melee attack or spell-casting
         if (!m_pInstance)
+        {
             return;
+        }
 
         // Eruption
         if (m_uiEruptionTimer < uiDiff)
@@ -244,7 +278,9 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
             {
                 // Actually this is correct :P
                 if (uiArea == (m_uiPhaseEruption % 6) || uiArea == 6 - (m_uiPhaseEruption % 6))
+                {
                     continue;
+                }
 
                 m_pInstance->DoTriggerHeiganTraps(m_creature, uiArea);
             }
@@ -253,7 +289,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
             ++m_uiPhaseEruption;
         }
         else
-            m_uiEruptionTimer -= uiDiff;
+            { m_uiEruptionTimer -= uiDiff; }
     }
 };
 

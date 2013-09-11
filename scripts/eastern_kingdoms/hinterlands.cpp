@@ -66,7 +66,9 @@ struct MANGOS_DLL_DECL npc_00x09hlAI : public npc_escortAI
             case 64:
                 DoScriptText(SAY_OOX_END, m_creature);
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_RESQUE_OOX_09, m_creature);
+                }
                 break;
         }
     }
@@ -99,7 +101,9 @@ struct MANGOS_DLL_DECL npc_00x09hlAI : public npc_escortAI
     void Aggro(Unit* pWho) override
     {
         if (pWho->GetEntry() == NPC_MARAUDING_OWL || pWho->GetEntry() == NPC_VILE_AMBUSHER)
+        {
             return;
+        }
 
         DoScriptText(urand(0, 1) ? SAY_OOX_AGGRO1 : SAY_OOX_AGGRO2, m_creature);
     }
@@ -120,7 +124,9 @@ bool QuestAccept_npc_00x09hl(Player* pPlayer, Creature* pCreature, const Quest* 
         DoScriptText(SAY_OOX_START, pCreature, pPlayer);
 
         if (npc_00x09hlAI* pEscortAI = dynamic_cast<npc_00x09hlAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return true;
 }
@@ -206,7 +212,9 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
             }
 
             if (urand(0, 3))
+            {
                 return;
+            }
 
             // only if attacked and escorter is not in combat?
             DoScriptText(urand(0, 1) ? SAY_RIN_HELP_1 : SAY_RIN_HELP_2, m_creature);
@@ -216,7 +224,9 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
     void DoSpawnAmbush(bool bFirst)
     {
         if (!bFirst)
+        {
             m_iSpawnId = 1;
+        }
 
         m_creature->SummonCreature(NPC_RANGER,
                                    m_afAmbushSpawn[m_iSpawnId].m_fX, m_afAmbushSpawn[m_iSpawnId].m_fY, m_afAmbushSpawn[m_iSpawnId].m_fZ, 0.0f,
@@ -241,7 +251,9 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
         Player* pPlayer = GetPlayerForEscort();
 
         if (!pPlayer)
+        {
             return;
+        }
 
         switch (uiPointId)
         {
@@ -295,7 +307,9 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
                     }
                 }
                 else
+                {
                     m_uiPostEventTimer -= uiDiff;
+                }
             }
 
             return;
@@ -310,10 +324,14 @@ bool QuestAccept_npc_rinji(Player* pPlayer, Creature* pCreature, const Quest* pQ
     if (pQuest->GetQuestId() == QUEST_RINJI_TRAPPED)
     {
         if (GameObject* pGo = GetClosestGameObjectWithEntry(pCreature, GO_RINJI_CAGE, INTERACTION_DISTANCE))
+        {
             pGo->UseDoorOrButton();
+        }
 
         if (npc_rinjiAI* pEscortAI = dynamic_cast<npc_rinjiAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return true;
 }

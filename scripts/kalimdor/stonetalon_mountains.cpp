@@ -71,7 +71,9 @@ struct MANGOS_DLL_DECL npc_kayaAI : public npc_escortAI
                 DoScriptText(SAY_END, m_creature);
 
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_PROTECT_KAYA, m_creature);
+                }
                 break;
         }
     }
@@ -92,7 +94,9 @@ bool QuestAccept_npc_kaya(Player* pPlayer, Creature* pCreature, Quest const* pQu
         DoScriptText(SAY_START, pCreature);
 
         if (npc_kayaAI* pEscortAI = dynamic_cast<npc_kayaAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return true;
 }
@@ -104,13 +108,13 @@ bool QuestAccept_npc_kaya(Player* pPlayer, Creature* pCreature, Quest const* pQu
 enum
 {
     QUEST_GERENZOS_ORDERS      = 1090,
-   
+
     NPC_WINDSHEAR_VERMIN       = 3998,
-	NPC_WINDSHEAR_TUNNEL_RAT   = 4001,
-	NPC_WINDSHEAR_STONECUTTER  = 4002,
+    NPC_WINDSHEAR_TUNNEL_RAT   = 4001,
+    NPC_WINDSHEAR_STONECUTTER  = 4002,
     NPC_WINDSHEAR_GEOMANCER    = 4003,
     NPC_WINDSHEAR_OVERLORD     = 4004,
-	FACTION_QUEST              = 495
+    FACTION_QUEST              = 495
 };
 
 struct SpawnPointstone
@@ -149,7 +153,7 @@ MovePointStone MovePointsst[] =   // // Set Movementpoints for Waves
 struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
 {
     npc_piznikAI(Creature* pCreature) : ScriptedAI(pCreature)
-	{
+    {
         m_uiPlayerGUID  = 0;
         m_bEventStarted = false;
         m_uiWaveTimer   = 60000;  // One minute until first Wave
@@ -159,7 +163,7 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
         m_uiWaveCount   = 0;
         m_uiMoveCount   = 0;
         Reset();
-	}
+    }
 
     void Reset()
     {
@@ -179,7 +183,7 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
         m_creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
         m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PASSIVE);
         m_creature->setFaction(FACTION_QUEST);
-      
+
         m_uiPlayerGUID  = uiPlayerGUID;
         m_bEventStarted = true;
         m_uiWaveTimer   = 60000;  // One minute until first Wave
@@ -200,7 +204,9 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         if (Player* pPlayer = (m_creature->GetMap()->GetPlayer(m_uiPlayerGUID)))
+        {
             pPlayer->SendQuestFailed(QUEST_GERENZOS_ORDERS);
+        }
 
         FinishEvent();
     }
@@ -223,24 +229,26 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
 
-		if (m_uiEventTimer < uiDiff)  //Event should be completed after 7 minutes even if waves are alive
-		{
-               if (Player* pPlayer = (m_creature->GetMap()->GetPlayer(m_uiPlayerGUID)))
-                  pPlayer->GroupEventHappens(QUEST_GERENZOS_ORDERS, m_creature);
+        if (m_uiEventTimer < uiDiff)  //Event should be completed after 7 minutes even if waves are alive
+        {
+            if (Player* pPlayer = (m_creature->GetMap()->GetPlayer(m_uiPlayerGUID)))
+            {
+                pPlayer->GroupEventHappens(QUEST_GERENZOS_ORDERS, m_creature);
+            }
 
-			FinishEvent();
-		}
+            FinishEvent();
+        }
 
 
         if (m_bEventStarted && !m_uiSummonCount)
         {
-			
-		if (m_uiWaveTimer < uiDiff && m_uiWaveCount <= 2)
+
+            if (m_uiWaveTimer < uiDiff && m_uiWaveCount <= 2)
             {
                 switch (m_uiWaveCount)
                 {
 
-				    case 0:
+                    case 0:
                         m_creature->SummonCreature(NPC_WINDSHEAR_VERMIN,   SpawnPointsst[2].fX, SpawnPointsst[2].fY, SpawnPointsst[2].fZ, SpawnPointsst[2].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
                         m_creature->SummonCreature(NPC_WINDSHEAR_TUNNEL_RAT,    SpawnPointsst[0].fX, SpawnPointsst[0].fY, SpawnPointsst[0].fZ, SpawnPointsst[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
                         m_creature->SummonCreature(NPC_WINDSHEAR_VERMIN, SpawnPointsst[1].fX, SpawnPointsst[1].fY, SpawnPointsst[1].fZ, SpawnPointsst[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
@@ -252,7 +260,7 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
                         m_creature->SummonCreature(NPC_WINDSHEAR_STONECUTTER,    SpawnPointsst[0].fX, SpawnPointsst[0].fY, SpawnPointsst[0].fZ, SpawnPointsst[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
                         m_creature->SummonCreature(NPC_WINDSHEAR_GEOMANCER, SpawnPointsst[1].fX, SpawnPointsst[1].fY, SpawnPointsst[1].fZ, SpawnPointsst[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
                         m_creature->SummonCreature(NPC_WINDSHEAR_STONECUTTER, SpawnPointsst[3].fX, SpawnPointsst[3].fY, SpawnPointsst[3].fZ, SpawnPointsst[3].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-						m_uiWaveTimer  = 45000;
+                        m_uiWaveTimer  = 45000;
                         m_uiMoveCount = 0;
                         break;
                     case 2:
@@ -260,19 +268,23 @@ struct MANGOS_DLL_DECL npc_piznikAI : public ScriptedAI
                         m_creature->SummonCreature(NPC_WINDSHEAR_OVERLORD,    SpawnPointsst[0].fX, SpawnPointsst[0].fY, SpawnPointsst[0].fZ, SpawnPointsst[0].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
                         m_creature->SummonCreature(NPC_WINDSHEAR_TUNNEL_RAT, SpawnPointsst[1].fX, SpawnPointsst[1].fY, SpawnPointsst[1].fZ, SpawnPointsst[1].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
                         m_creature->SummonCreature(NPC_WINDSHEAR_TUNNEL_RAT, SpawnPointsst[3].fX, SpawnPointsst[3].fY, SpawnPointsst[3].fZ, SpawnPointsst[3].fO, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 20000);
-						m_uiMoveCount = 0;
-						break;
+                        m_uiMoveCount = 0;
+                        break;
                 }
 
                 ++m_uiWaveCount;
             }
             else
+            {
                 m_uiWaveTimer -= uiDiff;
-			    m_uiEventTimer -= uiDiff;
+            }
+            m_uiEventTimer -= uiDiff;
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         DoMeleeAttackIfReady();
     }
@@ -283,7 +295,9 @@ bool QuestAccept_npc_piznik(Player* pPlayer, Creature* pCreature, const Quest* p
     if (pQuest->GetQuestId() == QUEST_GERENZOS_ORDERS)
     {
         if (npc_piznikAI* ppiznikAI = dynamic_cast<npc_piznikAI*>(pCreature->AI()))
+        {
             ppiznikAI->StartEvent(pPlayer->GetObjectGuid());
+        }
     }
     return true;
 }
@@ -307,7 +321,7 @@ void AddSC_stonetalon_mountains()
     pNewScript->pQuestAcceptNPC = &QuestAccept_npc_kaya;
     pNewScript->RegisterSelf();
 
-	pNewScript = new Script;
+    pNewScript = new Script;
     pNewScript->Name = "npc_piznik";
     pNewScript->GetAI = &GetAI_npc_piznik;
     pNewScript->pQuestAcceptNPC = &QuestAccept_npc_piznik;

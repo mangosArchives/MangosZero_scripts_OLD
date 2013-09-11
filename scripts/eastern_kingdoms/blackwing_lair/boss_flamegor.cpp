@@ -58,34 +58,44 @@ struct MANGOS_DLL_DECL boss_flamegorAI : public ScriptedAI
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_FLAMEGOR, IN_PROGRESS);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_FLAMEGOR, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_FLAMEGOR, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Shadow Flame Timer
         if (m_uiShadowFlameTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SHADOW_FLAME) == CAST_OK)
+            {
                 m_uiShadowFlameTimer = urand(15000, 22000);
+            }
         }
         else
-            m_uiShadowFlameTimer -= uiDiff;
+            { m_uiShadowFlameTimer -= uiDiff; }
 
         // Wing Buffet Timer
         if (m_uiWingBuffetTimer < uiDiff)
@@ -93,13 +103,15 @@ struct MANGOS_DLL_DECL boss_flamegorAI : public ScriptedAI
             if (DoCastSpellIfCan(m_creature, SPELL_WING_BUFFET) == CAST_OK)
             {
                 if (m_creature->GetThreatManager().getThreat(m_creature->getVictim()))
+                {
                     m_creature->GetThreatManager().modifyThreatPercent(m_creature->getVictim(), -75);
+                }
 
                 m_uiWingBuffetTimer = 25000;
             }
         }
         else
-            m_uiWingBuffetTimer -= uiDiff;
+            { m_uiWingBuffetTimer -= uiDiff; }
 
         // Frenzy Timer
         if (m_uiFrenzyTimer < uiDiff)
@@ -111,7 +123,7 @@ struct MANGOS_DLL_DECL boss_flamegorAI : public ScriptedAI
             }
         }
         else
-            m_uiFrenzyTimer -= uiDiff;
+            { m_uiFrenzyTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

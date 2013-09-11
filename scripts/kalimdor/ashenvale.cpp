@@ -110,10 +110,14 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
         if (HasEscortState(STATE_ESCORT_PAUSED))
         {
             if (urand(0, 1))
+            {
                 return;
+            }
 
             if (Player* pPlayer = GetPlayerForEscort())
+            {
                 DoScriptText(SAY_MUG_ON_GUARD, m_creature, pPlayer);
+            }
         }
     }
 
@@ -123,11 +127,15 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
         {
             case 0:
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     DoScriptText(SAY_MUG_START2, m_creature, pPlayer);
+                }
                 break;
             case 24:
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     DoScriptText(SAY_MUG_BRAZIER, m_creature, pPlayer);
+                }
 
                 if (GameObject* pGo = GetClosestGameObjectWithEntry(m_creature, GO_NAGA_BRAZIER, INTERACTION_DISTANCE * 2))
                 {
@@ -140,7 +148,9 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
                 DoScriptText(SAY_MUG_GRATITUDE, m_creature);
 
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_VORSHA, m_creature);
+                }
                 break;
             case 26:
                 DoScriptText(SAY_MUG_PATROL, m_creature);
@@ -193,7 +203,9 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
                     m_uiEventTimer = 10000;
                 }
                 else
+                {
                     m_uiEventTimer -= uiDiff;
+                }
             }
 
             return;
@@ -274,7 +286,9 @@ struct MANGOS_DLL_DECL npc_ruul_snowhoofAI : public npc_escortAI
                 break;
             case 21:
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_FREEDOM_TO_RUUL, m_creature);
+                }
                 break;
         }
     }
@@ -293,7 +307,9 @@ bool QuestAccept_npc_ruul_snowhoof(Player* pPlayer, Creature* pCreature, const Q
         pCreature->SetStandState(UNIT_STAND_STATE_STAND);
 
         if (npc_ruul_snowhoofAI* pEscortAI = dynamic_cast<npc_ruul_snowhoofAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return true;
 }
@@ -344,7 +360,9 @@ struct MANGOS_DLL_DECL npc_torekAI : public npc_escortAI
         Player* pPlayer = GetPlayerForEscort();
 
         if (!pPlayer)
+        {
             return;
+        }
 
         switch (uiPointId)
         {
@@ -378,7 +396,9 @@ struct MANGOS_DLL_DECL npc_torekAI : public npc_escortAI
     void UpdateEscortAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiRend_Timer < uiDiff)
         {
@@ -386,7 +406,7 @@ struct MANGOS_DLL_DECL npc_torekAI : public npc_escortAI
             m_uiRend_Timer = 20000;
         }
         else
-            m_uiRend_Timer -= uiDiff;
+            { m_uiRend_Timer -= uiDiff; }
 
         if (m_uiThunderclap_Timer < uiDiff)
         {
@@ -394,7 +414,7 @@ struct MANGOS_DLL_DECL npc_torekAI : public npc_escortAI
             m_uiThunderclap_Timer = 30000;
         }
         else
-            m_uiThunderclap_Timer -= uiDiff;
+            { m_uiThunderclap_Timer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -408,7 +428,9 @@ bool QuestAccept_npc_torek(Player* pPlayer, Creature* pCreature, const Quest* pQ
         DoScriptText(SAY_READY, pCreature, pPlayer);
 
         if (npc_torekAI* pEscortAI = dynamic_cast<npc_torekAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(true, pPlayer, pQuest);
+        }
     }
 
     return true;
@@ -493,13 +515,17 @@ struct MANGOS_DLL_DECL npc_feero_ironhandAI : public npc_escortAI
                 // Prepare the first ambush
                 DoScriptText(SAY_FIRST_AMBUSH_START, m_creature);
                 for (uint8 i = 0; i < 4; ++i)
+                {
                     DoSpawnMob(NPC_DARK_STRAND_ASSASSIN, aSummonPositions[0][0], aSummonPositions[0][1] - M_PI_F / 4 * i);
+                }
                 break;
             case 20:
                 // Prepare the second ambush
                 DoScriptText(SAY_SECOND_AMBUSH_START, m_creature);
                 for (uint8 i = 0; i < 3; ++i)
+                {
                     DoSpawnMob(NPC_FORSAKEN_SCOUT, aSummonPositions[1][0], aSummonPositions[1][1] - M_PI_F / 3 * i);
+                }
                 break;
             case 29:
                 // Final ambush
@@ -511,7 +537,9 @@ struct MANGOS_DLL_DECL npc_feero_ironhandAI : public npc_escortAI
             case 30:
                 // Complete the quest
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_SUPPLIES_TO_AUBERDINE, m_creature);
+                }
                 break;
         }
     }
@@ -567,10 +595,14 @@ struct MANGOS_DLL_DECL npc_feero_ironhandAI : public npc_escortAI
         {
             // Only one of the scouts yells
             if (m_uiCreaturesCount == 1)
+            {
                 DoScriptText(SAY_SCOUT_SECOND_AMBUSH, pSummoned, m_creature);
+            }
         }
         else if (pSummoned->GetEntry() == NPC_BALIZAR_THE_UMBRAGE)
+        {
             DoScriptText(SAY_BALIZAR_FINAL_AMBUSH, pSummoned);
+        }
 
         ++m_uiCreaturesCount;
         pSummoned->AI()->AttackStart(m_creature);
@@ -590,7 +622,9 @@ bool QuestAccept_npc_feero_ironhand(Player* pPlayer, Creature* pCreature, const 
         pCreature->SetFactionTemporary(FACTION_ESCORT_A_NEUTRAL_PASSIVE, TEMPFACTION_RESTORE_RESPAWN);
 
         if (npc_feero_ironhandAI* pEscortAI = dynamic_cast<npc_feero_ironhandAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(true, pPlayer, pQuest, true);
+        }
     }
 
     return true;

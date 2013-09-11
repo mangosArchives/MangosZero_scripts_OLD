@@ -94,10 +94,14 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
     {
         // Force the player to spawn corpse scarabs via spell
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
+        {
             pVictim->CastSpell(pVictim, SPELL_SELF_SPAWN_5, true, NULL, NULL, m_creature->GetObjectGuid());
+        }
 
         if (urand(0, 4))
+        {
             return;
+        }
 
         DoScriptText(SAY_SLAY, m_creature);
     }
@@ -106,25 +110,37 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
     {
         switch (urand(0, 2))
         {
-            case 0: DoScriptText(SAY_AGGRO1, m_creature); break;
-            case 1: DoScriptText(SAY_AGGRO2, m_creature); break;
-            case 2: DoScriptText(SAY_AGGRO3, m_creature); break;
+            case 0:
+                DoScriptText(SAY_AGGRO1, m_creature);
+                break;
+            case 1:
+                DoScriptText(SAY_AGGRO2, m_creature);
+                break;
+            case 2:
+                DoScriptText(SAY_AGGRO3, m_creature);
+                break;
         }
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_ANUB_REKHAN, IN_PROGRESS);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_ANUB_REKHAN, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_ANUB_REKHAN, FAIL);
+        }
     }
 
     void MoveInLineOfSight(Unit* pWho) override
@@ -141,17 +157,23 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_CRYPT_GUARD)
+        {
             DoScriptText(EMOTE_CRYPT_GUARD, pSummoned);
+        }
 
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+        {
             pSummoned->AI()->AttackStart(pTarget);
+        }
     }
 
     void SummonedCreatureDespawn(Creature* pSummoned) override
     {
         // If creature despawns on out of combat, skip this
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (pSummoned->GetEntry() == NPC_CRYPT_GUARD)
         {
@@ -165,7 +187,9 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
         m_introDialogue.DialogueUpdate(uiDiff);
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Impale
         if (m_uiImpaleTimer < uiDiff)
@@ -175,13 +199,15 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
             if (!m_creature->HasAura(SPELL_LOCUSTSWARM))
             {
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                {
                     DoCastSpellIfCan(pTarget, SPELL_IMPALE);
+                }
             }
 
             m_uiImpaleTimer = 15000;
         }
         else
-            m_uiImpaleTimer -= uiDiff;
+            { m_uiImpaleTimer -= uiDiff; }
 
         // Locust Swarm
         if (m_uiLocustSwarmTimer < uiDiff)
@@ -196,7 +222,7 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
             }
         }
         else
-            m_uiLocustSwarmTimer -= uiDiff;
+            { m_uiLocustSwarmTimer -= uiDiff; }
 
         // Summon
         if (m_uiSummonTimer)
@@ -208,7 +234,9 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
                 m_uiSummonTimer = 0;
             }
             else
+            {
                 m_uiSummonTimer -= uiDiff;
+            }
         }
 
         DoMeleeAttackIfReady();

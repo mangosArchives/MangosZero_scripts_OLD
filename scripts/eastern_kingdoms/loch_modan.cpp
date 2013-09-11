@@ -36,10 +36,14 @@ EndContentData */
 bool GossipHello_npc_mountaineer_pebblebitty(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->IsQuestGiver())
+    {
         pPlayer->PrepareQuestMenu(pCreature->GetObjectGuid());
+    }
 
     if (!pPlayer->GetQuestRewardStatus(3181) == 1)
+    {
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Open the gate please, i need to get to Searing Gorge", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+    }
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetObjectGuid());
 
@@ -120,7 +124,9 @@ struct MANGOS_DLL_DECL npc_miranAI: public npc_escortAI
     void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
+        {
             m_uiDwarves = 0;
+        }
     }
 
     void WaypointReached(uint32 uiPointId) override
@@ -135,7 +141,9 @@ struct MANGOS_DLL_DECL npc_miranAI: public npc_escortAI
             case 23:
                 DoScriptText(SAY_MIRAN_3, m_creature);
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_PROTECTING_THE_SHIPMENT, m_creature);
+                }
                 break;
         }
     }
@@ -146,7 +154,9 @@ struct MANGOS_DLL_DECL npc_miranAI: public npc_escortAI
         {
             --m_uiDwarves;
             if (!m_uiDwarves)
+            {
                 DoScriptText(SAY_MIRAN_2, m_creature);
+            }
         }
     }
 
@@ -155,7 +165,9 @@ struct MANGOS_DLL_DECL npc_miranAI: public npc_escortAI
         if (pSummoned->GetEntry() == NPC_DARK_IRON_DWARF)
         {
             if (!m_uiDwarves)
+            {
                 DoScriptText(SAY_DARK_IRON_DWARF, pSummoned);
+            }
             ++m_uiDwarves;
             pSummoned->AI()->AttackStart(m_creature);
         }
@@ -167,7 +179,9 @@ bool QuestAccept_npc_miran(Player* pPlayer, Creature* pCreature, const Quest* pQ
     if (pQuest->GetQuestId() == QUEST_PROTECTING_THE_SHIPMENT)
     {
         if (npc_miranAI* pEscortAI = dynamic_cast<npc_miranAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return true;
 }

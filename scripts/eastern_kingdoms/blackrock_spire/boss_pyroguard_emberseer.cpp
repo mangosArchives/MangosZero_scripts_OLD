@@ -80,13 +80,17 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_EMBERSEER, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_EMBERSEER, FAIL);
+        }
     }
 
     // Wrapper to handle the transformation
@@ -95,7 +99,9 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
         ++m_uiGrowingStacks;
 
         if (m_uiGrowingStacks == MAX_GROWING_STACKS * 0.5f)
+        {
             DoScriptText(EMOTE_NEAR, m_creature);
+        }
         else if (m_uiGrowingStacks == MAX_GROWING_STACKS)
         {
             DoScriptText(EMOTE_FULL, m_creature);
@@ -137,36 +143,46 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
                 for (GuidList::const_iterator itr = m_lIncarceratorsGuid.begin(); itr != m_lIncarceratorsGuid.end(); ++itr)
                 {
                     if (Creature* pIncarcerator = m_creature->GetMap()->GetCreature(*itr))
+                    {
                         pIncarcerator->CastSpell(m_creature, SPELL_ENCAGE_EMBERSEER, false);
+                    }
                 }
 
                 m_uiEncageTimer = 0;
             }
             else
+            {
                 m_uiEncageTimer -= uiDiff;
+            }
         }
 
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // FireNova Timer
         if (m_uiFireNovaTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_FIRENOVA) == CAST_OK)
+            {
                 m_uiFireNovaTimer = 6000;
+            }
         }
         else
-            m_uiFireNovaTimer -= uiDiff;
+            { m_uiFireNovaTimer -= uiDiff; }
 
         // FlameBuffet Timer
         if (m_uiFlameBuffetTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_FLAMEBUFFET) == CAST_OK)
+            {
                 m_uiFlameBuffetTimer = 14000;
+            }
         }
         else
-            m_uiFlameBuffetTimer -= uiDiff;
+            { m_uiFlameBuffetTimer -= uiDiff; }
 
         // PyroBlast Timer
         if (m_uiPyroBlastTimer < uiDiff)
@@ -174,11 +190,13 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_PYROBLAST) == CAST_OK)
+                {
                     m_uiPyroBlastTimer = 15000;
+                }
             }
         }
         else
-            m_uiPyroBlastTimer -= uiDiff;
+            { m_uiPyroBlastTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -195,7 +213,9 @@ bool EffectDummyCreature_pyroguard_emberseer(Unit* /*pCaster*/, uint32 uiSpellId
     if (uiSpellId == SPELL_GROWING && uiEffIndex == EFFECT_INDEX_0)
     {
         if (boss_pyroguard_emberseerAI* pEmberseerAI = dynamic_cast<boss_pyroguard_emberseerAI*>(pCreatureTarget->AI()))
+        {
             pEmberseerAI->DoHandleEmberseerGrowing();
+        }
     }
 
     return false;

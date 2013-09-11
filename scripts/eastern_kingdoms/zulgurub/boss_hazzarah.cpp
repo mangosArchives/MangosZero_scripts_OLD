@@ -53,13 +53,17 @@ struct MANGOS_DLL_DECL boss_hazzarahAI : public ScriptedAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+        {
             pSummoned->AI()->AttackStart(pTarget);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // ManaBurn_Timer
         if (m_uiManaBurnTimer < uiDiff)
@@ -67,11 +71,13 @@ struct MANGOS_DLL_DECL boss_hazzarahAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0, SPELL_CHAIN_BURN, SELECT_FLAG_POWER_MANA))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_CHAIN_BURN) == CAST_OK)
+                {
                     m_uiManaBurnTimer = urand(8000, 16000);
+                }
             }
         }
         else
-            m_uiManaBurnTimer -= uiDiff;
+            { m_uiManaBurnTimer -= uiDiff; }
 
         // Sleep_Timer
         if (m_uiSleepTimer < uiDiff)
@@ -79,20 +85,24 @@ struct MANGOS_DLL_DECL boss_hazzarahAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_SLEEP) == CAST_OK)
+                {
                     m_uiSleepTimer = urand(12000, 20000);
+                }
             }
         }
         else
-            m_uiSleepTimer -= uiDiff;
+            { m_uiSleepTimer -= uiDiff; }
 
         // Earthshock
         if (m_uiEarthShockTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_EARTH_SHOCK) == CAST_OK)
+            {
                 m_uiEarthShockTimer = urand(9000, 16000);
+            }
         }
         else
-            m_uiEarthShockTimer -= uiDiff;
+            { m_uiEarthShockTimer -= uiDiff; }
 
         // Illusions_Timer
         if (m_uiIllusionsTimer < uiDiff)
@@ -104,7 +114,7 @@ struct MANGOS_DLL_DECL boss_hazzarahAI : public ScriptedAI
             m_uiIllusionsTimer = urand(15000, 25000);
         }
         else
-            m_uiIllusionsTimer -= uiDiff;
+            { m_uiIllusionsTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

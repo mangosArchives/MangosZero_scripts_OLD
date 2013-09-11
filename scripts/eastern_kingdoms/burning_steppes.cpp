@@ -53,7 +53,9 @@ struct MANGOS_DLL_DECL npc_ragged_johnAI : public ScriptedAI
         if (!m_creature->getVictim() && who->IsTargetableForAttack() && (m_creature->IsHostileTo(who)) && who->isInAccessablePlaceFor(m_creature))
         {
             if (!m_creature->CanFly() && m_creature->GetDistanceZ(who) > CREATURE_Z_ATTACK_RANGE)
+            {
                 return;
+            }
 
             float attackRadius = m_creature->GetAttackDistance(who);
             if (m_creature->IsWithinDistInMap(who, attackRadius) && m_creature->IsWithinLOSInMap(who))
@@ -73,10 +75,14 @@ CreatureAI* GetAI_npc_ragged_john(Creature* pCreature)
 bool GossipHello_npc_ragged_john(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->IsQuestGiver())
+    {
         pPlayer->PrepareQuestMenu(pCreature->GetObjectGuid());
+    }
 
     if (pPlayer->GetQuestStatus(4224) == QUEST_STATUS_INCOMPLETE)
+    {
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Official business, John. I need some information about Marshal Windsor. Tell me about he last time you saw him.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+    }
 
     pPlayer->SEND_GOSSIP_MENU(2713, pCreature->GetObjectGuid());
     return true;
@@ -225,14 +231,18 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
     void Aggro(Unit* /*pWho*/) override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
+        {
             DoScriptText(SAY_AGGRO, m_creature);
+        }
     }
 
     void MoveInLineOfSight(Unit* pWho) override
     {
         // No combat during escort
         if (HasEscortState(STATE_ESCORT_ESCORTING))
+        {
             return;
+        }
 
         npc_escortAI::MoveInLineOfSight(pWho);
     }
@@ -277,13 +287,17 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
 
                 Player* pPlayer = GetPlayerForEscort();
                 if (!pPlayer)
+                {
                     return;
+                }
 
                 // Set all the dragons in combat
                 for (GuidList::const_iterator itr = m_lSearscaleGuidList.begin(); itr != m_lSearscaleGuidList.end(); ++itr)
                 {
                     if (Creature* pTemp = m_creature->GetMap()->GetCreature(*itr))
+                    {
                         pTemp->AI()->AttackStart(pPlayer);
+                    }
                 }
                 break;
             }
@@ -310,7 +324,9 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
             case SAY_LEXLORT_3:
                 // Note: this part isn't very clear. Should he just simply attack him, or charge him?
                 if (Creature* pNuzark = m_creature->GetMap()->GetCreature(m_nuzarkGuid))
+                {
                     pNuzark->HandleEmote(EMOTE_ONESHOT_ATTACK2HTIGHT);
+                }
                 break;
             case NPC_GRARK_LORKRUB:
                 // Fake death creature when the axe is lowered. This will allow us to finish the event
@@ -329,7 +345,9 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
             case SAY_LEXLORT_4:
                 // Finish the quest
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_ID_PRECARIOUS_PREDICAMENT, m_creature);
+                }
                 // Kill self
                 m_creature->DealDamage(m_creature, m_creature->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NONE, NULL, false);
                 break;
@@ -340,8 +358,12 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
     {
         switch (pSummoned->GetEntry())
         {
-            case NPC_HIGH_EXECUTIONER_NUZARK: m_nuzarkGuid  = pSummoned->GetObjectGuid(); break;
-            case NPC_SHADOW_OF_LEXLORT:       m_lexlortGuid = pSummoned->GetObjectGuid(); break;
+            case NPC_HIGH_EXECUTIONER_NUZARK:
+                m_nuzarkGuid  = pSummoned->GetObjectGuid();
+                break;
+            case NPC_SHADOW_OF_LEXLORT:
+                m_lexlortGuid = pSummoned->GetObjectGuid();
+                break;
             case NPC_SEARSCALE_DRAKE:
                 // If it's the flying drake allow him to move in circles
                 if (m_bIsFirstSearScale)
@@ -357,7 +379,9 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
             default:
                 // The hostile mobs should attack the player only
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pSummoned->AI()->AttackStart(pPlayer);
+                }
                 break;
         }
     }
@@ -387,9 +411,12 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
     {
         switch (uiEntry)
         {
-            case NPC_GRARK_LORKRUB:           return m_creature;
-            case NPC_HIGH_EXECUTIONER_NUZARK: return m_creature->GetMap()->GetCreature(m_nuzarkGuid);
-            case NPC_SHADOW_OF_LEXLORT:       return m_creature->GetMap()->GetCreature(m_lexlortGuid);
+            case NPC_GRARK_LORKRUB:
+                return m_creature;
+            case NPC_HIGH_EXECUTIONER_NUZARK:
+                return m_creature->GetMap()->GetCreature(m_nuzarkGuid);
+            case NPC_SHADOW_OF_LEXLORT:
+                return m_creature->GetMap()->GetCreature(m_lexlortGuid);
 
             default:
                 return NULL;
@@ -401,7 +428,9 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
         DialogueUpdate(uiDiff);
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         DoMeleeAttackIfReady();
     }
@@ -417,7 +446,9 @@ bool QuestAccept_npc_grark_lorkrub(Player* pPlayer, Creature* pCreature, const Q
     if (pQuest->GetQuestId() == QUEST_ID_PRECARIOUS_PREDICAMENT)
     {
         if (npc_grark_lorkrubAI* pEscortAI = dynamic_cast<npc_grark_lorkrubAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
 
         return true;
     }
@@ -432,7 +463,9 @@ bool EffectDummyCreature_spell_capture_grark(Unit* /*pCaster*/, uint32 uiSpellId
     {
         // Note: this implementation needs additional research! There is a lot of guesswork involved in this!
         if (pCreatureTarget->GetHealthPercent() > 25.0f)
+        {
             return false;
+        }
 
         // The faction is guesswork - needs more research
         DoScriptText(EMOTE_SUBMIT, pCreatureTarget);

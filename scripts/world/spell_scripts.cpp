@@ -76,12 +76,18 @@ bool EffectAuraDummy_spell_aura_dummy_npc(const Aura* pAura, bool bApply)
             Creature* pCreature = (Creature*)pAura->GetTarget();
 
             if (!pCreature || (pCreature->GetEntry() != NPC_FRANCLORN_FORGEWRIGHT && pCreature->GetEntry() != NPC_GAERIYAN))
+            {
                 return false;
+            }
 
             if (bApply)
+            {
                 pCreature->m_AuraFlags |= UNIT_AURAFLAG_ALIVE_INVISIBLE;
+            }
             else
+            {
                 pCreature->m_AuraFlags &= ~UNIT_AURAFLAG_ALIVE_INVISIBLE;
+            }
 
             return false;
         }
@@ -99,10 +105,14 @@ bool EffectDummyCreature_spell_dummy_npc(Unit* pCaster, uint32 uiSpellId, SpellE
             if (uiEffIndex == EFFECT_INDEX_0)
             {
                 if (pCaster->GetTypeId() != TYPEID_PLAYER)
+                {
                     return true;
+                }
 
                 if (pCreatureTarget->GetEntry() != NPC_SICKLY_DEER && pCreatureTarget->GetEntry() != NPC_SICKLY_GAZELLE)
+                {
                     return true;
+                }
 
                 // Update entry, remove aura, set the kill credit and despawn
                 uint32 uiUpdateEntry = pCreatureTarget->GetEntry() == NPC_SICKLY_DEER ? NPC_CURED_DEER : NPC_CURED_GAZELLE;
@@ -120,7 +130,9 @@ bool EffectDummyCreature_spell_dummy_npc(Unit* pCaster, uint32 uiSpellId, SpellE
             if (uiEffIndex == EFFECT_INDEX_1)
             {
                 if (pCreatureTarget->GetEntry() != NPC_MORBENT)
+                {
                     return true;
+                }
 
                 pCreatureTarget->UpdateEntry(NPC_WEAKENED_MORBENT);
                 return true;
@@ -132,7 +144,9 @@ bool EffectDummyCreature_spell_dummy_npc(Unit* pCaster, uint32 uiSpellId, SpellE
             if (uiEffIndex == EFFECT_INDEX_0)
             {
                 if (pCaster->GetTypeId() != TYPEID_PLAYER && pCreatureTarget->GetEntry() != NPC_DEEPRUN_RAT)
+                {
                     return true;
+                }
 
                 pCreatureTarget->UpdateEntry(NPC_ENTHRALLED_DEEPRUN_RAT);
                 pCreatureTarget->CastSpell(pCreatureTarget, SPELL_MELODIOUS_RAPTURE_VISUAL, false);

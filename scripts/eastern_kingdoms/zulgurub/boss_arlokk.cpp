@@ -81,7 +81,9 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 
         // Restore visibility
         if (m_creature->GetVisibility() != VISIBILITY_ON)
+        {
             m_creature->SetVisibility(VISIBILITY_ON);
+        }
     }
 
     void Aggro(Unit* /*pWho*/) override
@@ -92,7 +94,9 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_ARLOKK, FAIL);
+        }
 
         // we should be summoned, so despawn
         m_creature->ForcedDespawn();
@@ -103,23 +107,31 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
         // Restore visibility in case of killed by dots
         if (m_creature->GetVisibility() != VISIBILITY_ON)
+        {
             m_creature->SetVisibility(VISIBILITY_ON);
+        }
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_ARLOKK, DONE);
+        }
     }
 
     void JustSummoned(Creature* pSummoned) override
     {
         // Just attack a random target. The Marked player will attract them automatically
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+        {
             pSummoned->AI()->AttackStart(pTarget);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Summon panters every 5 seconds
         if (m_uiSummonTimer < uiDiff)
@@ -127,15 +139,19 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
             if (m_pInstance)
             {
                 if (Creature* pTrigger = m_pInstance->SelectRandomPantherTrigger(true))
+                {
                     m_creature->SummonCreature(NPC_ZULIAN_PROWLER, pTrigger->GetPositionX(), pTrigger->GetPositionY(), pTrigger->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+                }
                 if (Creature* pTrigger = m_pInstance->SelectRandomPantherTrigger(false))
+                {
                     m_creature->SummonCreature(NPC_ZULIAN_PROWLER, pTrigger->GetPositionX(), pTrigger->GetPositionY(), pTrigger->GetPositionZ(), 0, TEMPSUMMON_TIMED_OOC_DESPAWN, 30000);
+                }
             }
 
             m_uiSummonTimer = 5000;
         }
         else
-            m_uiSummonTimer -= uiDiff;
+            { m_uiSummonTimer -= uiDiff; }
 
         if (m_uiVisibleTimer)
         {
@@ -145,12 +161,16 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 m_creature->SetVisibility(VISIBILITY_ON);
 
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                {
                     AttackStart(pTarget);
+                }
 
                 m_uiVisibleTimer = 0;
             }
             else
+            {
                 m_uiVisibleTimer -= uiDiff;
+            }
 
             // Do nothing while vanished
             return;
@@ -164,11 +184,15 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
                 {
                     if (DoCastSpellIfCan(pTarget, SPELL_SHADOW_WORD_PAIN) == CAST_OK)
+                    {
                         m_uiShadowWordPainTimer = 15000;
+                    }
                 }
             }
             else
+            {
                 m_uiShadowWordPainTimer -= uiDiff;
+            }
 
             if (m_uiMarkTimer < uiDiff)
             {
@@ -182,20 +206,26 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 }
             }
             else
+            {
                 m_uiMarkTimer -= uiDiff;
+            }
 
             if (m_uiGougeTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_GOUGE) == CAST_OK)
                 {
                     if (m_creature->GetThreatManager().getThreat(m_creature->getVictim()))
+                    {
                         m_creature->GetThreatManager().modifyThreatPercent(m_creature->getVictim(), -80);
+                    }
 
                     m_uiGougeTimer = urand(17000, 27000);
                 }
             }
             else
+            {
                 m_uiGougeTimer -= uiDiff;
+            }
 
             // Transform to Panther
             if (m_uiTransformTimer < uiDiff)
@@ -207,7 +237,9 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 }
             }
             else
+            {
                 m_uiTransformTimer -= uiDiff;
+            }
         }
         // Panther phase
         else
@@ -215,26 +247,32 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
             if (m_uiRavageTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_RAVAGE) == CAST_OK)
+                {
                     m_uiRavageTimer = urand(10000, 15000);
+                }
             }
             else
-                m_uiRavageTimer -= uiDiff;
+                { m_uiRavageTimer -= uiDiff; }
 
             if (m_uiTrashTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_TRASH) == CAST_OK)
+                {
                     m_uiTrashTimer = urand(13000, 15000);
+                }
             }
             else
-                m_uiTrashTimer -= uiDiff;
+                { m_uiTrashTimer -= uiDiff; }
 
             if (m_uiWhirlwindTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_WHIRLWIND) == CAST_OK)
+                {
                     m_uiWhirlwindTimer = 15000;
+                }
             }
             else
-                m_uiWhirlwindTimer -= uiDiff;
+                { m_uiWhirlwindTimer -= uiDiff; }
 
             if (m_uiVanishTimer < uiDiff)
             {
@@ -246,7 +284,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 m_uiVisibleTimer = 45000;
             }
             else
-                m_uiVanishTimer -= uiDiff;
+                { m_uiVanishTimer -= uiDiff; }
 
             // Transform back
             if (m_uiTransformTimer < uiDiff)
@@ -256,7 +294,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 m_bIsPhaseTwo = false;
             }
             else
-                m_uiTransformTimer -= uiDiff;
+                { m_uiTransformTimer -= uiDiff; }
         }
 
         DoMeleeAttackIfReady();
@@ -273,7 +311,9 @@ bool GOUse_go_gong_of_bethekk(Player* /*pPlayer*/, GameObject* pGo)
     if (ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_ARLOKK) == DONE || pInstance->GetData(TYPE_ARLOKK) == IN_PROGRESS)
+        {
             return true;
+        }
 
         pInstance->SetData(TYPE_ARLOKK, IN_PROGRESS);
     }

@@ -133,7 +133,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
         m_pInstance = (instance_gnomeregan*)pCreature->GetInstanceData();
         // Remove Gossip-Menu in reload case for DONE enounter
         if (m_pInstance && m_pInstance->GetData(TYPE_GRUBBIS) == DONE)
+        {
             pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
+        }
         Reset();
     }
 
@@ -164,9 +166,13 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
         {
             // This requires order of the array
             if (asSummonInfo[i].uiPosition > uiIndex)
+            {
                 break;
+            }
             if (asSummonInfo[i].uiPosition == uiIndex)
+            {
                 m_creature->SummonCreature(asSummonInfo[i].uiEntry, asSummonInfo[i].fX, asSummonInfo[i].fY, asSummonInfo[i].fZ, asSummonInfo[i].fO, TEMPSUMMON_DEAD_DESPAWN, 0);
+            }
         }
     }
 
@@ -198,7 +204,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
         if (pSummoned->GetEntry() == NPC_GRUBBIS)
         {
             if (m_pInstance)
+            {
                 m_pInstance->SetData(TYPE_GRUBBIS, DONE);
+            }
             m_uiPhaseTimer = 1000;
         }
         m_luiSummonedMobGUIDs.remove(pSummoned->GetObjectGuid());
@@ -213,7 +221,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
     {
         // In case we are preparing the explosive charges, we won't start attacking mobs
         if (IsPreparingExplosiveCharge())
+        {
             return;
+        }
 
         npc_escortAI::MoveInLineOfSight(pWho);
     }
@@ -222,7 +232,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
     {
         // In case we are preparing the explosive charges, we won't start attacking mobs
         if (IsPreparingExplosiveCharge())
+        {
             return;
+        }
 
         npc_escortAI::AttackStart(pWho);
     }
@@ -231,37 +243,51 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
     {
         // Possibility for Aggro-Text only once per combat
         if (m_bDidAggroText)
+        {
             return;
+        }
 
         m_bDidAggroText = true;
 
         if (!urand(0, 2))
+        {
             DoScriptText(urand(0, 1) ? SAY_AGGRO_1 : SAY_AGGRO_2, m_creature, pAttacker);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         m_pInstance->SetData(TYPE_GRUBBIS, FAIL);
 
         if (m_bSouthernCaveInOpened)                        // close southern cave-in door
+        {
             m_pInstance->DoUseDoorOrButton(GO_CAVE_IN_SOUTH);
+        }
         if (m_bNorthernCaveInOpened)                        // close northern cave-in door
+        {
             m_pInstance->DoUseDoorOrButton(GO_CAVE_IN_NORTH);
+        }
 
         for (GuidList::const_iterator itr = m_luiSummonedMobGUIDs.begin(); itr != m_luiSummonedMobGUIDs.end(); ++itr)
         {
             if (Creature* pSummoned = m_creature->GetMap()->GetCreature(*itr))
+            {
                 pSummoned->ForcedDespawn();
+            }
         }
     }
 
     void StartEvent(Player* pPlayer)
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         m_pInstance->SetData(TYPE_GRUBBIS, IN_PROGRESS);
 
@@ -277,7 +303,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
             case 10:
                 // Open Southern Cave-In
                 if (m_pInstance && !m_bSouthernCaveInOpened)
+                {
                     m_pInstance->DoUseDoorOrButton(GO_CAVE_IN_SOUTH);
+                }
                 m_bSouthernCaveInOpened = true;
                 break;
             case 12:
@@ -287,7 +315,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                 DoScriptText(SAY_CHARGE_3, m_creature);
                 // Open Northern Cave-In
                 if (m_pInstance && !m_bNorthernCaveInOpened)
+                {
                     m_pInstance->DoUseDoorOrButton(GO_CAVE_IN_NORTH);
+                }
                 m_bNorthernCaveInOpened = true;
                 break;
         }
@@ -316,7 +346,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                 if (m_pInstance)
                 {
                     if (GameObject* pDoor = m_pInstance->GetSingleGameObjectFromStorage(GO_CAVE_IN_SOUTH))
+                    {
                         m_creature->SetFacingToObject(pDoor);
+                    }
                 }
                 DoScriptText(SAY_BLOW_1_10, m_creature);
                 m_uiPhaseTimer = 5000;
@@ -378,7 +410,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                         if (m_pInstance)
                         {
                             if (GameObject* pDoor = m_pInstance->GetSingleGameObjectFromStorage(GO_CAVE_IN_SOUTH))
+                            {
                                 m_creature->SetFacingToObject(pDoor);
+                            }
                         }
                         m_uiPhaseTimer = 2000;
                         break;
@@ -400,7 +434,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
 
                         // Summon first explosive charge
                         if (m_pInstance)
+                        {
                             m_pInstance->SetData(TYPE_EXPLOSIVE_CHARGE, DATA_EXPLOSIVE_CHARGE_1);
+                        }
                         // Remove EMOTE_STATE_USESTANDING state-emote
                         m_creature->HandleEmote(EMOTE_ONESHOT_NONE);
 
@@ -415,7 +451,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
 
                         // Summon second explosive charge
                         if (m_pInstance)
+                        {
                             m_pInstance->SetData(TYPE_EXPLOSIVE_CHARGE, DATA_EXPLOSIVE_CHARGE_2);
+                        }
                         // Remove EMOTE_STATE_USESTANDING state-emote
                         m_creature->HandleEmote(EMOTE_ONESHOT_NONE);
 
@@ -426,7 +464,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                         break;
                     case 15:                                // shortly before starting WP 14
                         if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_playerGuid))
+                        {
                             m_creature->SetFacingToObject(pPlayer);
+                        }
                         DoScriptText(SAY_CHARGE_2, m_creature);
                         m_uiPhaseTimer = 0;
                         break;
@@ -469,7 +509,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                         if (m_pInstance)
                         {
                             if (GameObject* pDoor = m_pInstance->GetSingleGameObjectFromStorage(GO_CAVE_IN_NORTH))
+                            {
                                 m_creature->SetFacingToObject(pDoor);
+                            }
                         }
                         m_uiPhaseTimer = 3000;
                         break;
@@ -488,7 +530,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
 
                         // Summon third explosive charge
                         if (m_pInstance)
+                        {
                             m_pInstance->SetData(TYPE_EXPLOSIVE_CHARGE, DATA_EXPLOSIVE_CHARGE_3);
+                        }
                         // Remove EMOTE_STATE_USESTANDING state-emote
                         m_creature->HandleEmote(EMOTE_ONESHOT_NONE);
 
@@ -503,7 +547,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
 
                         // Summon forth explosive charge
                         if (m_pInstance)
+                        {
                             m_pInstance->SetData(TYPE_EXPLOSIVE_CHARGE, DATA_EXPLOSIVE_CHARGE_4);
+                        }
                         // Remove EMOTE_STATE_USESTANDING state-emote
                         m_creature->HandleEmote(EMOTE_ONESHOT_NONE);
 
@@ -521,7 +567,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                         if (m_pInstance)
                         {
                             if (GameObject* pDoor = m_pInstance->GetSingleGameObjectFromStorage(GO_CAVE_IN_NORTH))
+                            {
                                 m_creature->SetFacingToObject(pDoor);
+                            }
                         }
                         DoScriptText(SAY_BLOW_2_10, m_creature);
                         m_uiPhaseTimer = 5000;
@@ -539,7 +587,9 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                         if (m_pInstance)
                         {
                             if (GameObject* pDoor = m_pInstance->GetSingleGameObjectFromStorage(GO_CAVE_IN_NORTH))
+                            {
                                 m_creature->SetFacingToObject(pDoor);
+                            }
                         }
                         m_creature->HandleEmote(EMOTE_ONESHOT_CHEER);
                         m_uiPhaseTimer = 5000;
@@ -579,11 +629,15 @@ struct MANGOS_DLL_DECL npc_blastmaster_emi_shortfuseAI : public npc_escortAI
                 ++m_uiPhase;
             }
             else
+            {
                 m_uiPhaseTimer -= uiDiff;
+            }
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         DoMeleeAttackIfReady();
     }
@@ -616,7 +670,9 @@ bool GossipSelect_npc_blastmaster_emi_shortfuse(Player* pPlayer, Creature* pCrea
             if (pInstance->GetData(TYPE_GRUBBIS) == NOT_STARTED || pInstance->GetData(TYPE_GRUBBIS) == FAIL)
             {
                 if (npc_blastmaster_emi_shortfuseAI* pEmiAI = dynamic_cast<npc_blastmaster_emi_shortfuseAI*>(pCreature->AI()))
+                {
                     pEmiAI->StartEvent(pPlayer);
+                }
             }
         }
     }

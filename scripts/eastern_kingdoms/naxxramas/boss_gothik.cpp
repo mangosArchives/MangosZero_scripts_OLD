@@ -118,7 +118,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
         for (GuidList::const_iterator itr = m_lSummonedAddGuids.begin(); itr != m_lSummonedAddGuids.end(); itr++)
         {
             if (Creature* pCreature = m_creature->GetMap()->GetCreature(*itr))
+            {
                 pCreature->ForcedDespawn();
+            }
         }
 
         m_lSummonedAddGuids.clear();
@@ -130,7 +132,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
     void Aggro(Unit* /*pWho*/) override
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         m_pInstance->SetData(TYPE_GOTHIK, IN_PROGRESS);
 
@@ -160,14 +164,18 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
         Map::PlayerList const& lPlayers = m_pInstance->instance->GetPlayers();
 
         if (lPlayers.isEmpty())
+        {
             return false;
+        }
 
         for (Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
         {
             if (Player* pPlayer = itr->getSource())
             {
                 if (!m_pInstance->IsInRightSideGothArea(pPlayer) && pPlayer->IsAlive())
+                {
                     return true;
+                }
             }
         }
 
@@ -177,7 +185,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
     void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
+        {
             DoScriptText(SAY_KILL, m_creature);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
@@ -185,13 +195,17 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GOTHIK, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GOTHIK, FAIL);
+        }
     }
 
     void PrepareSummonPlaces()
@@ -200,7 +214,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
         m_pInstance->GetGothSummonPointCreatures(lSummonList, true);
 
         if (lSummonList.empty())
+        {
             return;
+        }
 
         // Trainees and Rider
         uint8 index = 0;
@@ -211,9 +227,13 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
             if (*itr)
             {
                 if (uiTraineeCount == 0)
+                {
                     break;
+                }
                 if (index == 1)
+                {
                     m_lRiderSummonPosGuids.push_back((*itr)->GetObjectGuid());
+                }
                 else
                 {
                     m_lTraineeSummonPosGuids.push_back((*itr)->GetObjectGuid());
@@ -231,7 +251,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
             if (*itr)
             {
                 if (uiDeathKnightCount == 0)
+                {
                     break;
+                }
                 m_lDeathKnightSummonPosGuids.push_back((*itr)->GetObjectGuid());
                 --uiDeathKnightCount;
             }
@@ -243,19 +265,29 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
         GuidList* plSummonPosGuids;
         switch (uiSummonEntry)
         {
-            case NPC_UNREL_TRAINEE:      plSummonPosGuids = &m_lTraineeSummonPosGuids;     break;
-            case NPC_UNREL_DEATH_KNIGHT: plSummonPosGuids = &m_lDeathKnightSummonPosGuids; break;
-            case NPC_UNREL_RIDER:        plSummonPosGuids = &m_lRiderSummonPosGuids;       break;
+            case NPC_UNREL_TRAINEE:
+                plSummonPosGuids = &m_lTraineeSummonPosGuids;
+                break;
+            case NPC_UNREL_DEATH_KNIGHT:
+                plSummonPosGuids = &m_lDeathKnightSummonPosGuids;
+                break;
+            case NPC_UNREL_RIDER:
+                plSummonPosGuids = &m_lRiderSummonPosGuids;
+                break;
             default:
                 return;
         }
         if (plSummonPosGuids->empty())
+        {
             return;
+        }
 
         for (GuidList::iterator itr = plSummonPosGuids->begin(); itr != plSummonPosGuids->end(); ++itr)
         {
             if (Creature* pPos = m_creature->GetMap()->GetCreature(*itr))
+            {
                 m_creature->SummonCreature(uiSummonEntry, pPos->GetPositionX(), pPos->GetPositionY(), pPos->GetPositionZ(), pPos->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0);
+            }
         }
     }
 
@@ -263,7 +295,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
     {
         m_lSummonedAddGuids.push_back(pSummoned->GetObjectGuid());
         if (!IsCentralDoorClosed())
+        {
             pSummoned->SetInCombatWithZone();
+        }
     }
 
     void SummonedCreatureJustDied(Creature* pSummoned) override
@@ -271,7 +305,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
         m_lSummonedAddGuids.remove(pSummoned->GetObjectGuid());
 
         if (!m_pInstance)
+        {
             return;
+        }
 
         if (Creature* pAnchor = m_pInstance->GetClosestAnchorForGoth(pSummoned, true))
         {
@@ -280,9 +316,15 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                     // Wrong caster, it expected to be pSummoned.
                     // Mangos deletes the spell event at caster death, so for delayed spell like this
                     // it's just a workaround. Does not affect other than the visual though (+ spell takes longer to "travel")
-                case NPC_UNREL_TRAINEE:         m_creature->CastSpell(pAnchor, SPELL_A_TO_ANCHOR_1, true, NULL, NULL, pSummoned->GetObjectGuid()); break;
-                case NPC_UNREL_DEATH_KNIGHT:    m_creature->CastSpell(pAnchor, SPELL_B_TO_ANCHOR_1, true, NULL, NULL, pSummoned->GetObjectGuid()); break;
-                case NPC_UNREL_RIDER:           m_creature->CastSpell(pAnchor, SPELL_C_TO_ANCHOR_1, true, NULL, NULL, pSummoned->GetObjectGuid()); break;
+                case NPC_UNREL_TRAINEE:
+                    m_creature->CastSpell(pAnchor, SPELL_A_TO_ANCHOR_1, true, NULL, NULL, pSummoned->GetObjectGuid());
+                    break;
+                case NPC_UNREL_DEATH_KNIGHT:
+                    m_creature->CastSpell(pAnchor, SPELL_B_TO_ANCHOR_1, true, NULL, NULL, pSummoned->GetObjectGuid());
+                    break;
+                case NPC_UNREL_RIDER:
+                    m_creature->CastSpell(pAnchor, SPELL_C_TO_ANCHOR_1, true, NULL, NULL, pSummoned->GetObjectGuid());
+                    break;
             }
         }
     }
@@ -290,7 +332,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         switch (m_uiPhase)
         {
@@ -299,15 +343,29 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                 {
                     switch (m_uiSpeech)
                     {
-                        case 1: DoScriptText(SAY_SPEECH_1, m_creature); m_uiSpeechTimer = 4 * IN_MILLISECONDS; break;
-                        case 2: DoScriptText(SAY_SPEECH_2, m_creature); m_uiSpeechTimer = 6 * IN_MILLISECONDS; break;
-                        case 3: DoScriptText(SAY_SPEECH_3, m_creature); m_uiSpeechTimer = 5 * IN_MILLISECONDS; break;
-                        case 4: DoScriptText(SAY_SPEECH_4, m_creature); m_uiPhase = PHASE_BALCONY; break;
+                        case 1:
+                            DoScriptText(SAY_SPEECH_1, m_creature);
+                            m_uiSpeechTimer = 4 * IN_MILLISECONDS;
+                            break;
+                        case 2:
+                            DoScriptText(SAY_SPEECH_2, m_creature);
+                            m_uiSpeechTimer = 6 * IN_MILLISECONDS;
+                            break;
+                        case 3:
+                            DoScriptText(SAY_SPEECH_3, m_creature);
+                            m_uiSpeechTimer = 5 * IN_MILLISECONDS;
+                            break;
+                        case 4:
+                            DoScriptText(SAY_SPEECH_4, m_creature);
+                            m_uiPhase = PHASE_BALCONY;
+                            break;
                     }
                     m_uiSpeech++;
                 }
                 else
+                {
                     m_uiSpeechTimer -= uiDiff;
+                }
 
                 // No break here
 
@@ -318,21 +376,27 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                     m_uiTraineeTimer = 20 * IN_MILLISECONDS;
                 }
                 else
+                {
                     m_uiTraineeTimer -= uiDiff;
+                }
                 if (m_uiDeathKnightTimer < uiDiff)
                 {
                     SummonAdds(true, NPC_UNREL_DEATH_KNIGHT);
                     m_uiDeathKnightTimer = 25 * IN_MILLISECONDS;
                 }
                 else
+                {
                     m_uiDeathKnightTimer -= uiDiff;
+                }
                 if (m_uiRiderTimer < uiDiff)
                 {
                     SummonAdds(true, NPC_UNREL_RIDER);
                     m_uiRiderTimer = 30 * IN_MILLISECONDS;
                 }
                 else
+                {
                     m_uiRiderTimer -= uiDiff;
+                }
 
                 if (m_uiPhaseTimer < uiDiff)
                 {
@@ -340,7 +404,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                     m_uiPhaseTimer = 27 * IN_MILLISECONDS;
                 }
                 else
+                {
                     m_uiPhaseTimer -= uiDiff;
+                }
 
                 break;
 
@@ -362,7 +428,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                     }
                 }
                 else
+                {
                     m_uiPhaseTimer -= uiDiff;
+                }
 
                 break;
 
@@ -377,7 +445,9 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                     }
                 }
                 else
+                {
                     m_uiTeleportTimer -= uiDiff;
+                }
 
                 if (m_creature->GetHealthPercent() <= 30.0f)
                 {
@@ -392,24 +462,34 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                 if (m_uiHarvestSoulTimer < uiDiff)
                 {
                     if (DoCastSpellIfCan(m_creature, SPELL_HARVESTSOUL) == CAST_OK)
+                    {
                         m_uiHarvestSoulTimer = 15 * IN_MILLISECONDS;
+                    }
                 }
                 else
+                {
                     m_uiHarvestSoulTimer -= uiDiff;
+                }
 
                 if (m_uiShadowboltTimer)
                 {
                     if (m_uiShadowboltTimer <= uiDiff)
+                    {
                         m_uiShadowboltTimer = 0;
+                    }
                     else
+                    {
                         m_uiShadowboltTimer -= uiDiff;
+                    }
                 }
                 // Shadowbold cooldown finished, cast when ready
                 else if (!m_creature->IsNonMeleeSpellCasted(true))
                 {
                     // Select valid target
                     if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_TOPAGGRO, 0, SPELL_SHADOWBOLT, SELECT_FLAG_IN_LOS))
+                    {
                         DoCastSpellIfCan(pTarget, SPELL_SHADOWBOLT);
+                    }
                 }
 
                 break;
@@ -430,13 +510,17 @@ struct MANGOS_DLL_DECL boss_gothikAI : public ScriptedAI
                         if (Creature* pCreature = m_pInstance->instance->GetCreature(*itr))
                         {
                             if (!pCreature->IsInCombat())
+                            {
                                 pCreature->SetInCombatWithZone();
+                            }
                         }
                     }
                 }
             }
             else
+            {
                 m_uiControlZoneTimer -= uiDiff;
+            }
         }
     }
 };
@@ -449,12 +533,16 @@ CreatureAI* GetAI_boss_gothik(Creature* pCreature)
 bool EffectDummyCreature_spell_anchor(Unit* /*pCaster*/, uint32 uiSpellId, SpellEffectIndex uiEffIndex, Creature* pCreatureTarget, ObjectGuid /*originalCasterGuid*/)
 {
     if (uiEffIndex != EFFECT_INDEX_0 || pCreatureTarget->GetEntry() != NPC_SUB_BOSS_TRIGGER)
+    {
         return true;
+    }
 
     instance_naxxramas* pInstance = (instance_naxxramas*)pCreatureTarget->GetInstanceData();
 
     if (!pInstance)
+    {
         return true;
+    }
 
     switch (uiSpellId)
     {
@@ -467,9 +555,13 @@ bool EffectDummyCreature_spell_anchor(Unit* /*pCaster*/, uint32 uiSpellId, Spell
                 uint32 uiTriggered = SPELL_A_TO_ANCHOR_2;
 
                 if (uiSpellId == SPELL_B_TO_ANCHOR_1)
+                {
                     uiTriggered = SPELL_B_TO_ANCHOR_2;
+                }
                 else if (uiSpellId == SPELL_C_TO_ANCHOR_1)
+                {
                     uiTriggered = SPELL_C_TO_ANCHOR_2;
+                }
 
                 pCreatureTarget->CastSpell(pAnchor2, uiTriggered, true);
             }
@@ -494,9 +586,13 @@ bool EffectDummyCreature_spell_anchor(Unit* /*pCaster*/, uint32 uiSpellId, Spell
                     uint32 uiTriggered = SPELL_A_TO_SKULL;
 
                     if (uiSpellId == SPELL_B_TO_ANCHOR_2)
+                    {
                         uiTriggered = SPELL_B_TO_SKULL;
+                    }
                     else if (uiSpellId == SPELL_C_TO_ANCHOR_2)
+                    {
                         uiTriggered = SPELL_C_TO_SKULL;
+                    }
 
                     pCreatureTarget->CastSpell(pTarget, uiTriggered, true);
                 }
@@ -512,14 +608,20 @@ bool EffectDummyCreature_spell_anchor(Unit* /*pCaster*/, uint32 uiSpellId, Spell
                 uint32 uiNpcEntry = NPC_SPECT_TRAINEE;
 
                 if (uiSpellId == SPELL_B_TO_SKULL)
+                {
                     uiNpcEntry = NPC_SPECT_DEATH_KNIGHT;
+                }
                 else if (uiSpellId == SPELL_C_TO_SKULL)
+                {
                     uiNpcEntry = NPC_SPECT_RIDER;
+                }
 
                 pGoth->SummonCreature(uiNpcEntry, pCreatureTarget->GetPositionX(), pCreatureTarget->GetPositionY(), pCreatureTarget->GetPositionZ(), pCreatureTarget->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0);
 
                 if (uiNpcEntry == NPC_SPECT_RIDER)
+                {
                     pGoth->SummonCreature(NPC_SPECT_HORSE, pCreatureTarget->GetPositionX(), pCreatureTarget->GetPositionY(), pCreatureTarget->GetPositionZ(), pCreatureTarget->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0);
+                }
             }
             return true;
         }

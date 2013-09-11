@@ -49,37 +49,47 @@ struct MANGOS_DLL_DECL boss_noxxionAI : public ScriptedAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+        {
             pSummoned->AI()->AttackStart(pTarget);
+        }
     }
 
     void UpdateAI(const uint32 diff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiToxicVolleyTimer < diff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_TOXICVOLLEY) == CAST_OK)
+            {
                 m_uiToxicVolleyTimer = 9000;
+            }
         }
         else
-            m_uiToxicVolleyTimer -= diff;
+            { m_uiToxicVolleyTimer -= diff; }
 
         if (m_uiUppercutTimer < diff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_UPPERCUT) == CAST_OK)
+            {
                 m_uiUppercutTimer = 12000;
+            }
         }
         else
-            m_uiUppercutTimer -= diff;
+            { m_uiUppercutTimer -= diff; }
 
         if (m_uiSummonTimer < diff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_NOXXION_SPAWNS_AURA) == CAST_OK)
+            {
                 m_uiSummonTimer = 40000;
+            }
         }
         else
-            m_uiSummonTimer -= diff;
+            { m_uiSummonTimer -= diff; }
 
         DoMeleeAttackIfReady();
     }
@@ -102,7 +112,9 @@ bool EffectAuraDummy_spell_aura_dummy_noxxion_spawns(const Aura* pAura, bool bAp
                 pTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             }
             else
+            {
                 pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            }
         }
     }
     return true;

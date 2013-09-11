@@ -52,29 +52,35 @@ struct MANGOS_DLL_DECL boss_high_interrogator_gerstahnAI : public ScriptedAI
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // ShadowWordPain_Timer
         if (m_uiShadowWordPainTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+            {
                 DoCastSpellIfCan(pTarget, SPELL_SHADOWWORDPAIN);
+            }
 
             m_uiShadowWordPainTimer = 7000;
         }
         else
-            m_uiShadowWordPainTimer -= uiDiff;
+            { m_uiShadowWordPainTimer -= uiDiff; }
 
         // ManaBurn_Timer
         if (m_uiManaBurnTimer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0, SPELL_MANABURN, SELECT_FLAG_POWER_MANA))
+            {
                 DoCastSpellIfCan(pTarget, SPELL_MANABURN);
+            }
 
             m_uiManaBurnTimer = 10000;
         }
         else
-            m_uiManaBurnTimer -= uiDiff;
+            { m_uiManaBurnTimer -= uiDiff; }
 
         // PsychicScream_Timer
         if (m_uiPsychicScreamTimer < uiDiff)
@@ -83,7 +89,7 @@ struct MANGOS_DLL_DECL boss_high_interrogator_gerstahnAI : public ScriptedAI
             m_uiPsychicScreamTimer = 30000;
         }
         else
-            m_uiPsychicScreamTimer -= uiDiff;
+            { m_uiPsychicScreamTimer -= uiDiff; }
 
         // ShadowShield_Timer
         if (m_uiShadowShieldTimer < uiDiff)
@@ -92,7 +98,7 @@ struct MANGOS_DLL_DECL boss_high_interrogator_gerstahnAI : public ScriptedAI
             m_uiShadowShieldTimer = 25000;
         }
         else
-            m_uiShadowShieldTimer -= uiDiff;
+            { m_uiShadowShieldTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

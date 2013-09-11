@@ -87,13 +87,17 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GLUTH, DONE);
+        }
     }
 
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GLUTH, IN_PROGRESS);
+        }
     }
 
     void KilledUnit(Unit* pVictim) override
@@ -109,7 +113,9 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GLUTH, FAIL);
+        }
     }
 
     void JustSummoned(Creature* pSummoned) override
@@ -129,7 +135,9 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
         for (GuidList::const_iterator itr = m_lZombieChowGuidList.begin(); itr != m_lZombieChowGuidList.end(); ++itr)
         {
             if (Creature* pZombie = m_creature->GetMap()->GetCreature(*itr))
+            {
                 pZombie->GetMotionMaster()->MoveFollow(m_creature, ATTACK_DISTANCE, 0);
+            }
         }
     }
 
@@ -141,11 +149,15 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
             if (Creature* pZombie = m_creature->GetMap()->GetCreature(*itr))
             {
                 if (!pZombie->IsAlive())
+                {
                     continue;
+                }
 
                 // Devour a Zombie
                 if (pZombie->IsWithinDistInMap(m_creature, 15.0f))
+                {
                     m_creature->DealDamage(pZombie, pZombie->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+                }
             }
         }
     }
@@ -153,7 +165,9 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiZombieSearchTimer < uiDiff)
         {
@@ -161,16 +175,18 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
             m_uiZombieSearchTimer = 3000;
         }
         else
-            m_uiZombieSearchTimer -= uiDiff;
+            { m_uiZombieSearchTimer -= uiDiff; }
 
         // Mortal Wound
         if (m_uiMortalWoundTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_MORTALWOUND) == CAST_OK)
+            {
                 m_uiMortalWoundTimer = 10000;
+            }
         }
         else
-            m_uiMortalWoundTimer -= uiDiff;
+            { m_uiMortalWoundTimer -= uiDiff; }
 
         // Decimate
         if (m_uiDecimateTimer < uiDiff)
@@ -183,7 +199,7 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
             }
         }
         else
-            m_uiDecimateTimer -= uiDiff;
+            { m_uiDecimateTimer -= uiDiff; }
 
         // Enrage
         if (m_uiEnrageTimer < uiDiff)
@@ -195,16 +211,18 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
             }
         }
         else
-            m_uiEnrageTimer -= uiDiff;
+            { m_uiEnrageTimer -= uiDiff; }
 
         // Terrifying Roar
         if (m_uiRoarTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_TERRIFYING_ROAR) == CAST_OK)
+            {
                 m_uiRoarTimer = 20000;
+            }
         }
         else
-            m_uiRoarTimer -= uiDiff;
+            { m_uiRoarTimer -= uiDiff; }
 
         // Summon
         if (m_uiSummonTimer < uiDiff)
@@ -218,16 +236,18 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
             m_uiSummonTimer = 6000;
         }
         else
-            m_uiSummonTimer -= uiDiff;
+            { m_uiSummonTimer -= uiDiff; }
 
         // Berserk
         if (m_uiBerserkTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_BERSERK) == CAST_OK)
+            {
                 m_uiBerserkTimer = MINUTE * 5 * IN_MILLISECONDS;
+            }
         }
         else
-            m_uiBerserkTimer -= uiDiff;
+            { m_uiBerserkTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

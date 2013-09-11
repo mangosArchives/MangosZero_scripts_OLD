@@ -36,11 +36,15 @@ void SystemMgr::LoadVersion()
         delete pResult;
     }
     else
+    {
         script_error_log("Missing `sd2_db_version` information.");
+    }
 
     // Setup version info and display it
     if (strSD2Version.empty())
+    {
         strSD2Version.append("ScriptDev2 ");
+    }
 
     strSD2Version.append(_FULLVERSION);
 
@@ -113,7 +117,9 @@ void SystemMgr::LoadScriptWaypoints()
             }
 
             if (!pCInfo->ScriptID)
+            {
                 error_db_log("SD2: DB table script_waypoint has waypoint for creature entry %u, but creature does not have ScriptName defined and then useless.", pTemp.uiCreatureEntry);
+            }
 
             m_mPointMoveMap[uiEntry].push_back(pTemp);
             ++uiNodeCount;

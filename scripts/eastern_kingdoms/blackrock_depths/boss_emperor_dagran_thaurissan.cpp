@@ -64,7 +64,9 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
     void JustDied(Unit* /*pVictim*/) override
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         if (Creature* pPrincess = m_pInstance->GetSingleCreatureFromStorage(NPC_PRINCESS))
         {
@@ -84,12 +86,16 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiHandOfThaurissan_Timer < uiDiff)
         {
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+            {
                 DoCastSpellIfCan(pTarget, SPELL_HANDOFTHAURISSAN);
+            }
 
             // 3 Hands of Thaurissan will be casted
             // if (m_uiCounter < 3)
@@ -104,7 +110,7 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
             //}
         }
         else
-            m_uiHandOfThaurissan_Timer -= uiDiff;
+            { m_uiHandOfThaurissan_Timer -= uiDiff; }
 
         // AvatarOfFlame_Timer
         if (m_uiAvatarOfFlame_Timer < uiDiff)
@@ -113,7 +119,7 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
             m_uiAvatarOfFlame_Timer = 18000;
         }
         else
-            m_uiAvatarOfFlame_Timer -= uiDiff;
+            { m_uiAvatarOfFlame_Timer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -183,7 +189,9 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             {
                 // if evade, then check if he is alive. If not, start make portal
                 if (!pEmperor->IsAlive())
+                {
                     m_creature->CastSpell(m_creature, SPELL_OPEN_PORTAL, false);
+                }
             }
         }
     }
@@ -192,7 +200,9 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // MindBlast_Timer
         if (m_uiMindBlast_Timer < uiDiff)
@@ -201,7 +211,7 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             m_uiMindBlast_Timer = 14000;
         }
         else
-            m_uiMindBlast_Timer -= uiDiff;
+            { m_uiMindBlast_Timer -= uiDiff; }
 
         // ShadowWordPain_Timer
         if (m_uiShadowWordPain_Timer < uiDiff)
@@ -210,7 +220,7 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             m_uiShadowWordPain_Timer = 18000;
         }
         else
-            m_uiShadowWordPain_Timer -= uiDiff;
+            { m_uiShadowWordPain_Timer -= uiDiff; }
 
         // Smite_Timer
         if (m_uiSmite_Timer < uiDiff)
@@ -219,7 +229,7 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             m_uiSmite_Timer = 10000;
         }
         else
-            m_uiSmite_Timer -= uiDiff;
+            { m_uiSmite_Timer -= uiDiff; }
 
         // Heal_Timer
         if (m_uiHeal_Timer < uiDiff)
@@ -227,13 +237,15 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             if (Creature* pEmperor = m_pInstance->GetSingleCreatureFromStorage(NPC_EMPEROR))
             {
                 if (pEmperor->IsAlive() && pEmperor->GetHealthPercent() != 100.0f)
+                {
                     DoCastSpellIfCan(pEmperor, SPELL_HEAL);
+                }
             }
 
             m_uiHeal_Timer = 10000;
         }
         else
-            m_uiHeal_Timer -= uiDiff;
+            { m_uiHeal_Timer -= uiDiff; }
 
         // No meele?
     }

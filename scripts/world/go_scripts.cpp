@@ -72,13 +72,23 @@ bool GOUse_go_andorhal_tower(Player* pPlayer, GameObject* pGo)
         uint32 uiKillCredit = 0;
         switch (pGo->GetEntry())
         {
-            case GO_ANDORHAL_TOWER_1:   uiKillCredit = NPC_ANDORHAL_TOWER_1;   break;
-            case GO_ANDORHAL_TOWER_2:   uiKillCredit = NPC_ANDORHAL_TOWER_2;   break;
-            case GO_ANDORHAL_TOWER_3:   uiKillCredit = NPC_ANDORHAL_TOWER_3;   break;
-            case GO_ANDORHAL_TOWER_4:   uiKillCredit = NPC_ANDORHAL_TOWER_4;   break;
+            case GO_ANDORHAL_TOWER_1:
+                uiKillCredit = NPC_ANDORHAL_TOWER_1;
+                break;
+            case GO_ANDORHAL_TOWER_2:
+                uiKillCredit = NPC_ANDORHAL_TOWER_2;
+                break;
+            case GO_ANDORHAL_TOWER_3:
+                uiKillCredit = NPC_ANDORHAL_TOWER_3;
+                break;
+            case GO_ANDORHAL_TOWER_4:
+                uiKillCredit = NPC_ANDORHAL_TOWER_4;
+                break;
         }
         if (uiKillCredit)
+        {
             pPlayer->KilledMonsterCredit(uiKillCredit);
+        }
     }
     return true;
 }

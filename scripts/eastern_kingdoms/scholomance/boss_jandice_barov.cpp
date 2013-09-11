@@ -50,23 +50,29 @@ struct MANGOS_DLL_DECL boss_jandicebarovAI : public ScriptedAI
         pSummoned->ApplySpellImmune(0, IMMUNITY_DAMAGE, SPELL_SCHOOL_MASK_MAGIC, true);
 
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+        {
             pSummoned->AI()->AttackStart(pTarget);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // CurseOfBlood_Timer
         if (m_uiCurseOfBloodTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_CURSE_OF_BLOOD) == CAST_OK)
+            {
                 m_uiCurseOfBloodTimer = urand(30000, 35000);
+            }
         }
         else
-            m_uiCurseOfBloodTimer -= uiDiff;
+            { m_uiCurseOfBloodTimer -= uiDiff; }
 
         // Banish
         if (m_uiBanishTimer < uiDiff)
@@ -74,20 +80,24 @@ struct MANGOS_DLL_DECL boss_jandicebarovAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_BANISH) == CAST_OK)
+                {
                     m_uiBanishTimer = urand(17000, 21000);
+                }
             }
         }
         else
-            m_uiBanishTimer -= uiDiff;
+            { m_uiBanishTimer -= uiDiff; }
 
         // Illusion_Timer
         if (m_uiIllusionTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SUMMON_ILLUSIONS) == CAST_OK)
+            {
                 m_uiIllusionTimer = 25000;
+            }
         }
         else
-            m_uiIllusionTimer -= uiDiff;
+            { m_uiIllusionTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

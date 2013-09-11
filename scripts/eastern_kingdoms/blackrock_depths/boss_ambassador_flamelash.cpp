@@ -66,7 +66,9 @@ struct MANGOS_DLL_DECL boss_ambassador_flamelashAI : public ScriptedAI
     void SummonedMovementInform(Creature* pSummoned, uint32 /*uiMotionType*/, uint32 uiPointId) override
     {
         if (uiPointId != 1)
+        {
             return;
+        }
 
         pSummoned->CastSpell(m_creature, SPELL_BURNING_SPIRIT, true);
     }
@@ -75,7 +77,9 @@ struct MANGOS_DLL_DECL boss_ambassador_flamelashAI : public ScriptedAI
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // m_uiSpiritTimer
         if (m_uiSpiritTimer < uiDiff)
@@ -88,7 +92,7 @@ struct MANGOS_DLL_DECL boss_ambassador_flamelashAI : public ScriptedAI
             m_uiSpiritTimer = 20000;
         }
         else
-            m_uiSpiritTimer -= uiDiff;
+            { m_uiSpiritTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

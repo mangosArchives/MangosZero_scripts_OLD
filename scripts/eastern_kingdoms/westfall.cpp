@@ -64,13 +64,19 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
         {
             switch (m_uiWPHolder)
             {
-                case 7: DoScriptText(SAY_DS_DOWN_1, m_creature); break;
-                case 8: DoScriptText(SAY_DS_DOWN_2, m_creature); break;
-                case 9: DoScriptText(SAY_DS_DOWN_3, m_creature); break;
+                case 7:
+                    DoScriptText(SAY_DS_DOWN_1, m_creature);
+                    break;
+                case 8:
+                    DoScriptText(SAY_DS_DOWN_2, m_creature);
+                    break;
+                case 9:
+                    DoScriptText(SAY_DS_DOWN_3, m_creature);
+                    break;
             }
         }
         else
-            m_uiWPHolder = 0;
+            { m_uiWPHolder = 0; }
 
         m_uiShootTimer = 0;
     }
@@ -119,7 +125,9 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
                 break;
             case 17:
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     pPlayer->GroupEventHappens(QUEST_TOME_VALOR, m_creature);
+                }
                 break;
         }
     }
@@ -127,7 +135,9 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
     void AttackStart(Unit* pWho) override
     {
         if (!pWho)
+        {
             return;
+        }
 
         if (m_creature->Attack(pWho, false))
         {
@@ -147,17 +157,21 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
     void UpdateEscortAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiShootTimer < uiDiff)
         {
             m_uiShootTimer = 1000;
 
             if (!m_creature->CanReachWithMeleeAttack(m_creature->getVictim()))
+            {
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_SHOOT);
+            }
         }
         else
-            m_uiShootTimer -= uiDiff;
+            { m_uiShootTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -170,7 +184,9 @@ bool QuestAccept_npc_daphne_stilwell(Player* pPlayer, Creature* pCreature, const
         DoScriptText(SAY_DS_START, pCreature);
 
         if (npc_daphne_stilwellAI* pEscortAI = dynamic_cast<npc_daphne_stilwellAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(true, pPlayer, pQuest);
+        }
     }
 
     return true;
@@ -209,7 +225,9 @@ struct MANGOS_DLL_DECL npc_defias_traitorAI : public npc_escortAI
                 break;
             case 36:
                 if (Player* pPlayer = GetPlayerForEscort())
+                {
                     DoScriptText(SAY_PROGRESS, m_creature, pPlayer);
+                }
                 break;
             case 44:
                 if (Player* pPlayer = GetPlayerForEscort())
@@ -236,7 +254,9 @@ bool QuestAccept_npc_defias_traitor(Player* pPlayer, Creature* pCreature, const 
         DoScriptText(SAY_START, pCreature, pPlayer);
 
         if (npc_defias_traitorAI* pEscortAI = dynamic_cast<npc_defias_traitorAI*>(pCreature->AI()))
+        {
             pEscortAI->Start(true, pPlayer, pQuest);
+        }
     }
 
     return true;

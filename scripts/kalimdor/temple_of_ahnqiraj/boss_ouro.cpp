@@ -100,13 +100,17 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
     void Aggro(Unit* /*pWho*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_OURO, IN_PROGRESS);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_OURO, FAIL);
+        }
 
         m_creature->ForcedDespawn();
     }
@@ -114,7 +118,9 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_OURO, DONE);
+        }
     }
 
     void JustSummoned(Creature* pSummoned) override
@@ -134,7 +140,9 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
     {
         // Return since we have no pTarget
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (!m_bSubmerged)
         {
@@ -148,26 +156,36 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
                     m_uiSummonBaseTimer = 0;
                 }
                 else
+                {
                     m_uiSummonBaseTimer -= uiDiff;
+                }
             }
 
             // Sweep
             if (m_uiSweepTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_SWEEP) == CAST_OK)
+                {
                     m_uiSweepTimer = 20000;
+                }
             }
             else
+            {
                 m_uiSweepTimer -= uiDiff;
+            }
 
             // Sand Blast
             if (m_uiSandBlastTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_SANDBLAST) == CAST_OK)
+                {
                     m_uiSandBlastTimer = 22000;
+                }
             }
             else
+            {
                 m_uiSandBlastTimer -= uiDiff;
+            }
 
             if (!m_bEnraged)
             {
@@ -196,7 +214,9 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
                     }
                 }
                 else
+                {
                     m_uiSubmergeTimer -= uiDiff;
+                }
             }
             else
             {
@@ -204,22 +224,30 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
                 if (m_uiSummonMoundTimer < uiDiff)
                 {
                     if (DoCastSpellIfCan(m_creature, SPELL_SUMMON_OURO_MOUND) == CAST_OK)
+                    {
                         m_uiSummonMoundTimer = 10000;
+                    }
                 }
                 else
+                {
                     m_uiSummonMoundTimer -= uiDiff;
+                }
             }
 
             // If we are within range melee the target
             if (m_creature->CanReachWithMeleeAttack(m_creature->getVictim()))
+            {
                 DoMeleeAttackIfReady();
+            }
             // Spam Boulder spell when enraged and not tanked
             else if (m_bEnraged)
             {
                 if (!m_creature->IsNonMeleeSpellCasted(false))
                 {
                     if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+                    {
                         DoCastSpellIfCan(pTarget, SPELL_BOULDER);
+                    }
                 }
             }
         }
@@ -230,7 +258,9 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
             {
                 // Teleport to the trigger in order to get a new location
                 if (Creature* pTrigger = m_creature->GetMap()->GetCreature(m_ouroTriggerGuid))
+                {
                     m_creature->NearTeleportTo(pTrigger->GetPositionX(), pTrigger->GetPositionY(), pTrigger->GetPositionZ(), 0);
+                }
 
                 if (DoCastSpellIfCan(m_creature, SPELL_BIRTH) == CAST_OK)
                 {
@@ -243,7 +273,7 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
                 }
             }
             else
-                m_uiSubmergeTimer -= uiDiff;
+                { m_uiSubmergeTimer -= uiDiff; }
         }
     }
 };

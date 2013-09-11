@@ -55,25 +55,33 @@ struct MANGOS_DLL_DECL boss_gehennasAI : public ScriptedAI
     void Aggro(Unit* /*pwho*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GEHENNAS, IN_PROGRESS);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GEHENNAS, DONE);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_GEHENNAS, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // ShadowBolt Timer
         if (m_uiShadowBoltTimer < uiDiff)
@@ -81,13 +89,17 @@ struct MANGOS_DLL_DECL boss_gehennasAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_SHADOW_BOLT) == CAST_OK)
+                {
                     m_uiShadowBoltTimer = 7000;
+                }
             }
             else                                            // In case someone attempts soloing, we don't need to scan for targets every tick
+            {
                 m_uiShadowBoltTimer = 7000;
+            }
         }
         else
-            m_uiShadowBoltTimer -= uiDiff;
+            { m_uiShadowBoltTimer -= uiDiff; }
 
         // Rain of Fire Timer
         if (m_uiRainOfFireTimer < uiDiff)
@@ -95,20 +107,24 @@ struct MANGOS_DLL_DECL boss_gehennasAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_RAIN_OF_FIRE) == CAST_OK)
+                {
                     m_uiRainOfFireTimer = urand(4000, 12000);
+                }
             }
         }
         else
-            m_uiRainOfFireTimer -= uiDiff;
+            { m_uiRainOfFireTimer -= uiDiff; }
 
         // GehennasCurse Timer
         if (m_uiGehennasCurseTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_GEHENNAS_CURSE) == CAST_OK)
+            {
                 m_uiGehennasCurseTimer = 30000;
+            }
         }
         else
-            m_uiGehennasCurseTimer -= uiDiff;
+            { m_uiGehennasCurseTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

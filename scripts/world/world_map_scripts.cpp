@@ -69,7 +69,9 @@ struct MANGOS_DLL_DECL world_map_kalimdor : public ScriptedMap
     void OnCreatureCreate(Creature* pCreature)
     {
         if (pCreature->GetEntry() == NPC_MURKDEEP)
+        {
             m_mNpcEntryGuidStore[NPC_MURKDEEP] = pCreature->GetObjectGuid();
+        }
     }
 
     void OnCreatureDeath(Creature* pCreature)

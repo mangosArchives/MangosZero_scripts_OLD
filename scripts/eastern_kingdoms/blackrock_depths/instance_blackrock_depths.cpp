@@ -67,7 +67,9 @@ void instance_blackrock_depths::OnCreatureCreate(Creature* pCreature)
         case NPC_WARBRINGER_CONST:
             // Golems not in the Relict Vault?
             if (std::abs(pCreature->GetPositionZ() - aVaultPositions[2]) > 1.0f || !pCreature->IsWithinDist2d(aVaultPositions[0], aVaultPositions[1], 20.0f))
+            {
                 break;
+            }
             // Golems in Relict Vault need to have a stoned aura, set manually to prevent reapply when reached home
             pCreature->CastSpell(pCreature, SPELL_STONED, true);
             // Store the Relict Vault Golems into m_sVaultNpcGuids
@@ -119,7 +121,9 @@ void instance_blackrock_depths::SetData(uint32 uiType, uint32 uiData)
         case TYPE_RING_OF_LAW:
             // If finished the arena event after theldren fight
             if (uiData == DONE && m_auiEncounter[0] == SPECIAL)
+            {
                 DoRespawnGameObject(GO_ARENA_SPOILS, HOUR);
+            }
             m_auiEncounter[0] = uiData;
             break;
         case TYPE_VAULT:
@@ -138,11 +142,15 @@ void instance_blackrock_depths::SetData(uint32 uiType, uint32 uiData)
                     {
                         pConstruct = instance->GetCreature(*itr);
                         if (pConstruct)
+                        {
                             pConstruct->RemoveAurasDueToSpell(SPELL_STONED);
+                        }
                     }
 
                     if (!pConstruct)
+                    {
                         return;
+                    }
 
                     // Summon doomgrip
                     pConstruct->SummonCreature(NPC_WATCHER_DOOMGRIP, aVaultPositions[0], aVaultPositions[1], aVaultPositions[2], aVaultPositions[3], TEMPSUMMON_DEAD_DESPAWN, 0);
@@ -151,24 +159,34 @@ void instance_blackrock_depths::SetData(uint32 uiType, uint32 uiData)
                 return;
             }
             if (uiData == DONE)
+            {
                 DoUseDoorOrButton(GO_SECRET_DOOR);
+            }
             m_auiEncounter[1] = uiData;
             break;
         case TYPE_BAR:
             if (uiData == SPECIAL)
+            {
                 ++m_uiBarAleCount;
+            }
             else
+            {
                 m_auiEncounter[2] = uiData;
+            }
             break;
         case TYPE_TOMB_OF_SEVEN:
             // Don't set the same data twice
             if (uiData == m_auiEncounter[3])
+            {
                 break;
+            }
             // Combat door
             DoUseDoorOrButton(GO_TOMB_ENTER);
             // Start the event
             if (uiData == IN_PROGRESS)
+            {
                 DoCallNextDwarf();
+            }
             if (uiData == FAIL)
             {
                 // Reset dwarfes
@@ -177,7 +195,9 @@ void instance_blackrock_depths::SetData(uint32 uiType, uint32 uiData)
                     if (Creature* pDwarf = GetSingleCreatureFromStorage(aTombDwarfes[i]))
                     {
                         if (!pDwarf->IsAlive())
+                        {
                             pDwarf->Respawn();
+                        }
                     }
                 }
 
@@ -248,9 +268,13 @@ uint32 instance_blackrock_depths::GetData(uint32 uiType) const
             return m_auiEncounter[1];
         case TYPE_BAR:
             if (m_auiEncounter[2] == IN_PROGRESS && m_uiBarAleCount == 3)
+            {
                 return SPECIAL;
+            }
             else
+            {
                 return m_auiEncounter[2];
+            }
         case TYPE_TOMB_OF_SEVEN:
             return m_auiEncounter[3];
         case TYPE_LYCEUM:
@@ -280,7 +304,9 @@ void instance_blackrock_depths::Load(const char* chrIn)
 
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
         if (m_auiEncounter[i] == IN_PROGRESS)
+        {
             m_auiEncounter[i] = NOT_STARTED;
+        }
 
     OUT_LOAD_INST_DATA_COMPLETE;
 }
@@ -288,7 +314,9 @@ void instance_blackrock_depths::Load(const char* chrIn)
 void instance_blackrock_depths::OnCreatureEnterCombat(Creature* pCreature)
 {
     if (pCreature->GetEntry() == NPC_MAGMUS)
+    {
         SetData(TYPE_IRON_HALL, IN_PROGRESS);
+    }
 }
 
 void instance_blackrock_depths::OnCreatureEvade(Creature* pCreature)
@@ -335,7 +363,9 @@ void instance_blackrock_depths::OnCreatureDeath(Creature* pCreature)
 
                 // If all event npcs dead then set event to done
                 if (m_sVaultNpcGuids.empty())
+                {
                     SetData(TYPE_VAULT, DONE);
+                }
             }
             break;
         case NPC_OGRABISI:
@@ -343,7 +373,9 @@ void instance_blackrock_depths::OnCreatureDeath(Creature* pCreature)
         case NPC_CREST:
         case NPC_JAZ:
             if (GetData(TYPE_QUEST_JAIL_BREAK) == IN_PROGRESS)
+            {
                 SetData(TYPE_QUEST_JAIL_BREAK, SPECIAL);
+            }
             break;
             // Handle Tomb of the Seven dwarf death event
         case NPC_HATEREL:
@@ -354,10 +386,14 @@ void instance_blackrock_depths::OnCreatureDeath(Creature* pCreature)
         case NPC_DOPEREL:
             // Only handle the event when event is in progress
             if (GetData(TYPE_TOMB_OF_SEVEN) != IN_PROGRESS)
+            {
                 return;
+            }
             // Call the next dwarf only if it's the last one which joined the fight
             if (pCreature->GetEntry() == aTombDwarfes[m_uiDwarfRound - 1])
+            {
                 DoCallNextDwarf();
+            }
             break;
         case NPC_DOOMREL:
             SetData(TYPE_TOMB_OF_SEVEN, DONE);
@@ -394,10 +430,14 @@ void instance_blackrock_depths::Update(uint32 uiDiff)
                 m_uiDwarfFightTimer = 30000;
             }
             else
+            {
                 m_uiDwarfFightTimer = 0;
+            }
         }
         else
+        {
             m_uiDwarfFightTimer -= uiDiff;
+        }
     }
 }
 

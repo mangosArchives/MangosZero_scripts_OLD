@@ -104,7 +104,9 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
     {
         // If Rajaxx is in range attack him
         if (pWho->GetEntry() == NPC_RAJAXX && m_creature->IsWithinDistInMap(pWho, 50.0f))
+        {
             AttackStart(pWho);
+        }
 
         ScriptedAI::MoveInLineOfSight(pWho);
     }
@@ -112,13 +114,17 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
     void JustDied(Unit* pKiller) override
     {
         if (pKiller->GetEntry() != NPC_RAJAXX)
+        {
             return;
+        }
 
         // Yell when killed by Rajaxx
         if (m_pInstance)
         {
             if (Creature* pRajaxx = m_pInstance->GetSingleCreatureFromStorage(NPC_RAJAXX))
+            {
                 DoScriptText(SAY_KILLS_ANDOROV, pRajaxx);
+            }
         }
     }
 
@@ -128,14 +134,18 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
         if (iEntry == SAY_ANDOROV_ATTACK_START)
         {
             if (m_pInstance)
+            {
                 m_pInstance->SetData(TYPE_RAJAXX, IN_PROGRESS);
+            }
         }
     }
 
     void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE)
+        {
             return;
+        }
 
         switch (uiPointId)
         {
@@ -164,7 +174,9 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
     void EnterEvadeMode() override
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         m_creature->RemoveAllAurasOnEvade();
         m_creature->DeleteThreatList();
@@ -174,10 +186,14 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
         {
             // reset to combat position
             if (m_uiPointId >= 4)
+            {
                 m_creature->GetMotionMaster()->MovePoint(POINT_ID_MOVE_ATTACK, aAndorovMoveLocs[4].m_fX, aAndorovMoveLocs[4].m_fY, aAndorovMoveLocs[4].m_fZ);
+            }
             // reset to intro position
             else
+            {
                 m_creature->GetMotionMaster()->MovePoint(POINT_ID_MOVE_INTRO, aAndorovMoveLocs[2].m_fX, aAndorovMoveLocs[2].m_fY, aAndorovMoveLocs[2].m_fZ);
+            }
         }
 
         m_creature->SetLootRecipient(NULL);
@@ -189,7 +205,9 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
     void DoInitializeFollowers()
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         GuidList m_lKaldoreiGuids;
         m_pInstance->GetKaldoreiGuidList(m_lKaldoreiGuids);
@@ -197,7 +215,9 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
         for (GuidList::const_iterator itr = m_lKaldoreiGuids.begin(); itr != m_lKaldoreiGuids.end(); ++itr)
         {
             if (Creature* pKaldorei = m_creature->GetMap()->GetCreature(*itr))
+            {
                 pKaldorei->GetMotionMaster()->MoveFollow(m_creature, pKaldorei->GetDistance(m_creature), pKaldorei->GetAngle(m_creature));
+            }
         }
     }
 
@@ -224,35 +244,45 @@ struct MANGOS_DLL_DECL npc_general_andorovAI : public ScriptedAI, private Dialog
                 m_uiMoveTimer = 0;
             }
             else
+            {
                 m_uiMoveTimer -= uiDiff;
+            }
         }
 
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiBashTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_BASH) == CAST_OK)
+            {
                 m_uiBashTimer = urand(12000, 15000);
+            }
         }
         else
-            m_uiBashTimer -= uiDiff;
+            { m_uiBashTimer -= uiDiff; }
 
         if (m_uiStrikeTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_STRIKE) == CAST_OK)
+            {
                 m_uiStrikeTimer = urand(4000, 6000);
+            }
         }
         else
-            m_uiStrikeTimer -= uiDiff;
+            { m_uiStrikeTimer -= uiDiff; }
 
         if (m_uiCommandAuraTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_AURA_OF_COMMAND) == CAST_OK)
+            {
                 m_uiCommandAuraTimer = urand(30000, 45000);
+            }
         }
         else
-            m_uiCommandAuraTimer -= uiDiff;
+            { m_uiCommandAuraTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -268,10 +298,14 @@ bool GossipHello_npc_general_andorov(Player* pPlayer, Creature* pCreature)
     if (instance_ruins_of_ahnqiraj* pInstance = (instance_ruins_of_ahnqiraj*)pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_RAJAXX) == IN_PROGRESS)
+        {
             return true;
+        }
 
         if (pInstance->GetData(TYPE_RAJAXX) == NOT_STARTED || pInstance->GetData(TYPE_RAJAXX) == FAIL)
+        {
             pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+        }
 
         pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_VENDOR, GOSSIP_ITEM_TRADE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
         pPlayer->SEND_GOSSIP_MENU(GOSSIP_TEXT_ID_INTRO, pCreature->GetObjectGuid());
@@ -285,13 +319,17 @@ bool GossipSelect_npc_general_andorov(Player* pPlayer, Creature* pCreature, uint
     if (uiAction == GOSSIP_ACTION_INFO_DEF + 1)
     {
         if (npc_general_andorovAI* pAndorovAI = dynamic_cast<npc_general_andorovAI*>(pCreature->AI()))
+        {
             pAndorovAI->DoMoveToEventLocation();
+        }
 
         pPlayer->CLOSE_GOSSIP_MENU();
     }
 
     if (uiAction == GOSSIP_ACTION_TRADE)
+    {
         pPlayer->SEND_VENDORLIST(pCreature->GetObjectGuid());
+    }
 
     return true;
 }
@@ -318,7 +356,9 @@ struct MANGOS_DLL_DECL npc_kaldorei_eliteAI : public ScriptedAI
     void EnterEvadeMode() override
     {
         if (!m_pInstance)
+        {
             return;
+        }
 
         m_creature->RemoveAllAurasOnEvade();
         m_creature->DeleteThreatList();
@@ -330,7 +370,9 @@ struct MANGOS_DLL_DECL npc_kaldorei_eliteAI : public ScriptedAI
             if (Creature* pAndorov = m_pInstance->GetSingleCreatureFromStorage(NPC_GENERAL_ANDOROV))
             {
                 if (pAndorov->IsAlive())
+                {
                     m_creature->GetMotionMaster()->MoveFollow(pAndorov, m_creature->GetDistance(pAndorov), m_creature->GetAngle(pAndorov));
+                }
             }
         }
 
@@ -342,23 +384,29 @@ struct MANGOS_DLL_DECL npc_kaldorei_eliteAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiCleaveTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_CLEAVE) == CAST_OK)
+            {
                 m_uiCleaveTimer = urand(5000, 7000);
+            }
         }
         else
-            m_uiCleaveTimer -= uiDiff;
+            { m_uiCleaveTimer -= uiDiff; }
 
         if (m_uiStrikeTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_MORTAL_STRIKE) == CAST_OK)
+            {
                 m_uiStrikeTimer = urand(9000, 13000);
+            }
         }
         else
-            m_uiStrikeTimer -= uiDiff;
+            { m_uiStrikeTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

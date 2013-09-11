@@ -68,7 +68,9 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
         DoCastSpellIfCan(m_creature, SPELL_SUMMON_CLOUD, CAST_TRIGGERED);
 
         if (!m_pInstance)
+        {
             return;
+        }
 
         // If the other 2 bugs are still alive, make unlootable
         if (m_pInstance->GetData(TYPE_BUG_TRIO) != DONE)
@@ -81,32 +83,40 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_BUG_TRIO, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Cleave_Timer
         if (m_uiCleaveTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_CLEAVE) == CAST_OK)
+            {
                 m_uiCleaveTimer = urand(5000, 12000);
+            }
         }
         else
-            m_uiCleaveTimer -= uiDiff;
+            { m_uiCleaveTimer -= uiDiff; }
 
         // ToxicVolley_Timer
         if (m_uiToxicVolleyTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_TOXIC_VOLLEY) == CAST_OK)
+            {
                 m_uiToxicVolleyTimer = urand(10000, 15000);
+            }
         }
         else
-            m_uiToxicVolleyTimer -= uiDiff;
+            { m_uiToxicVolleyTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -137,7 +147,9 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
         DoCastSpellIfCan(m_creature, SPELL_VENGEANCE, CAST_TRIGGERED);
 
         if (!m_pInstance)
+        {
             return;
+        }
 
         // If the other 2 bugs are still alive, make unlootable
         if (m_pInstance->GetData(TYPE_BUG_TRIO) != DONE)
@@ -150,14 +162,18 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_BUG_TRIO, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Charge_Timer
         if (m_uiChargeTimer < uiDiff)
@@ -165,11 +181,13 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_CHARGE) == CAST_OK)
+                {
                     m_uiChargeTimer = urand(8000, 16000);
+                }
             }
         }
         else
-            m_uiChargeTimer -= uiDiff;
+            { m_uiChargeTimer -= uiDiff; }
 
         // KnockBack_Timer
         if (m_uiKnockBackTimer < uiDiff)
@@ -177,13 +195,15 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
             if (DoCastSpellIfCan(m_creature, SPELL_KNOCKBACK) == CAST_OK)
             {
                 if (m_creature->GetThreatManager().getThreat(m_creature->getVictim()))
+                {
                     m_creature->GetThreatManager().modifyThreatPercent(m_creature->getVictim(), -80);
+                }
 
                 m_uiKnockBackTimer = urand(15000, 25000);
             }
         }
         else
-            m_uiKnockBackTimer -= uiDiff;
+            { m_uiKnockBackTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }
@@ -219,7 +239,9 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
         }
 
         if (!m_pInstance)
+        {
             return;
+        }
 
         // If the other 2 bugs are still alive, make unlootable
         if (m_pInstance->GetData(TYPE_BUG_TRIO) != DONE)
@@ -232,14 +254,18 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_BUG_TRIO, FAIL);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Fear_Timer
         if (m_uiFearTimer < uiDiff)
@@ -251,7 +277,7 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
             }
         }
         else
-            m_uiFearTimer -= uiDiff;
+            { m_uiFearTimer -= uiDiff; }
 
         // Heal
         if (m_uiHealTimer < uiDiff)
@@ -259,11 +285,13 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
             if (Unit* pTarget = DoSelectLowestHpFriendly(100.0f))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_HEAL) == CAST_OK)
+                {
                     m_uiHealTimer = urand(15000, 30000);
+                }
             }
         }
         else
-            m_uiHealTimer -= uiDiff;
+            { m_uiHealTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

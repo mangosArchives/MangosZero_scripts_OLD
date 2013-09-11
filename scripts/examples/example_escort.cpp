@@ -99,10 +99,12 @@ struct MANGOS_DLL_DECL example_escortAI : public npc_escortAI
         if (HasEscortState(STATE_ESCORT_ESCORTING))
         {
             if (Player* pTemp = GetPlayerForEscort())
+            {
                 DoScriptText(SAY_AGGRO1, m_creature, pTemp);
+            }
         }
         else
-            DoScriptText(SAY_AGGRO2, m_creature);
+            { DoScriptText(SAY_AGGRO2, m_creature); }
     }
 
     // Only overwrite if there is something special
@@ -119,11 +121,13 @@ struct MANGOS_DLL_DECL example_escortAI : public npc_escortAI
                     DoScriptText(SAY_DEATH_1, m_creature, pTemp);
                 }
                 else
+                {
                     DoScriptText(SAY_DEATH_2, m_creature, pTemp);
+                }
             }
         }
         else
-            DoScriptText(SAY_DEATH_3, m_creature);
+            { DoScriptText(SAY_DEATH_3, m_creature); }
 
         // Fail quest for group - if you don't implement JustDied in your script, this will automatically work
         npc_escortAI::JustDied(pKiller);
@@ -141,7 +145,9 @@ struct MANGOS_DLL_DECL example_escortAI : public npc_escortAI
                 m_uiDeathCoilTimer = 4000;
             }
             else
+            {
                 m_uiDeathCoilTimer -= uiDiff;
+            }
 
             DoMeleeAttackIfReady();
         }
@@ -166,7 +172,9 @@ struct MANGOS_DLL_DECL example_escortAI : public npc_escortAI
                     m_uiChatTimer = 12000;
                 }
                 else
+                {
                     m_uiChatTimer -= uiDiff;
+                }
             }
         }
     }
@@ -201,19 +209,25 @@ bool GossipSelect_example_escort(Player* pPlayer, Creature* pCreature, uint32 /*
             pPlayer->CLOSE_GOSSIP_MENU();
 
             if (pEscortAI)
+            {
                 pEscortAI->Start(true, pPlayer);
+            }
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
             pPlayer->CLOSE_GOSSIP_MENU();
 
             if (pEscortAI)
+            {
                 pEscortAI->Start(false, pPlayer);
+            }
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
             pPlayer->CLOSE_GOSSIP_MENU();
 
             if (pEscortAI)
+            {
                 pEscortAI->Start(true, pPlayer);
+            }
             break;
         default:
             return false;                                   // nothing defined      -> mangos core handling

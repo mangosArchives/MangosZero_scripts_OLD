@@ -62,7 +62,9 @@ struct MANGOS_DLL_DECL boss_arcanist_doanAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiDetonationTimer)
         {
@@ -75,12 +77,16 @@ struct MANGOS_DLL_DECL boss_arcanist_doanAI : public ScriptedAI
                 }
             }
             else
+            {
                 m_uiDetonationTimer -= uiDiff;
+            }
         }
 
         // Do not attack while having the bubble active
         if (m_creature->HasAura(SPELL_ARCANE_BUBBLE))
+        {
             return;
+        }
 
         // If we are <50% hp cast Arcane Bubble
         if (!bShielded && m_creature->GetHealthPercent() <= 50.0f)
@@ -97,29 +103,35 @@ struct MANGOS_DLL_DECL boss_arcanist_doanAI : public ScriptedAI
             if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 1))
             {
                 if (DoCastSpellIfCan(pTarget, SPELL_POLYMORPH) == CAST_OK)
+                {
                     m_uiPolymorphTimer = 20000;
+                }
             }
         }
         else
-            m_uiPolymorphTimer -= uiDiff;
+            { m_uiPolymorphTimer -= uiDiff; }
 
         // Silence_Timer
         if (m_uiSilenceTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_SILENCE) == CAST_OK)
+            {
                 m_uiSilenceTimer = urand(15000, 22000);
+            }
         }
         else
-            m_uiSilenceTimer -= uiDiff;
+            { m_uiSilenceTimer -= uiDiff; }
 
         // ArcaneExplosion_Timer
         if (m_uiArcaneExplosionTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_ARCANE_EXPLOSION) == CAST_OK)
+            {
                 m_uiArcaneExplosionTimer = urand(2500, 8500);
+            }
         }
         else
-            m_uiArcaneExplosionTimer -= uiDiff;
+            { m_uiArcaneExplosionTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

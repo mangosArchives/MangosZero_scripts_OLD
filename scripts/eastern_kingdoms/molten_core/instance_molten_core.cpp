@@ -51,7 +51,9 @@ bool instance_molten_core::IsEncounterInProgress() const
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
+        {
             return true;
+        }
     }
 
     return false;
@@ -130,7 +132,9 @@ void instance_molten_core::SetData(uint32 uiType, uint32 uiData)
         case TYPE_MAJORDOMO:
             m_auiEncounter[uiType] = uiData;
             if (uiData == DONE)
+            {
                 DoRespawnGameObject(GO_CACHE_OF_THE_FIRE_LORD, HOUR);
+            }
             break;
         case TYPE_RAGNAROS:
             m_auiEncounter[uiType] = uiData;
@@ -139,7 +143,9 @@ void instance_molten_core::SetData(uint32 uiType, uint32 uiData)
 
     // Check if Majordomo can be summoned
     if (uiData == SPECIAL)
+    {
         DoSpawnMajordomoIfCan(false);
+    }
 
     if (uiData == DONE || uiData == SPECIAL)
     {
@@ -161,7 +167,9 @@ void instance_molten_core::SetData(uint32 uiType, uint32 uiData)
 uint32 instance_molten_core::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
+    {
         return m_auiEncounter[uiType];
+    }
 
     return 0;
 }
@@ -171,22 +179,30 @@ void instance_molten_core::DoSpawnMajordomoIfCan(bool bByPlayerEnter)
 {
     // If both Majordomo and Ragnaros events are finished, return
     if (m_auiEncounter[TYPE_MAJORDOMO] == DONE && m_auiEncounter[TYPE_RAGNAROS] == DONE)
+    {
         return;
+    }
 
     // If already spawned return
     if (GetSingleCreatureFromStorage(NPC_MAJORDOMO, true))
+    {
         return;
+    }
 
     // Check if all rune bosses are done
     for (uint8 i = TYPE_MAGMADAR; i < TYPE_MAJORDOMO; ++i)
     {
         if (m_auiEncounter[i] != SPECIAL)
+        {
             return;
+        }
     }
 
     Player* pPlayer = GetPlayerInMap();
     if (!pPlayer)
+    {
         return;
+    }
 
     // Summon Majordomo
     // If Majordomo encounter isn't done, summon at encounter place, else near Ragnaros
@@ -202,10 +218,14 @@ void instance_molten_core::DoSpawnMajordomoIfCan(bool bByPlayerEnter)
         else                                                // Else yell and summon adds
         {
             if (!bByPlayerEnter)
+            {
                 DoScriptText(SAY_MAJORDOMO_SPAWN, pMajordomo);
+            }
 
             for (uint8 i = 0; i < MAX_MAJORDOMO_ADDS; ++i)
+            {
                 pMajordomo->SummonCreature(m_aBosspawnLocs[i].m_uiEntry, m_aBosspawnLocs[i].m_fX, m_aBosspawnLocs[i].m_fY, m_aBosspawnLocs[i].m_fZ, m_aBosspawnLocs[i].m_fO, TEMPSUMMON_MANUAL_DESPAWN, DAY * IN_MILLISECONDS);
+            }
         }
     }
 }
@@ -229,7 +249,9 @@ void instance_molten_core::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
+        {
             m_auiEncounter[i] = NOT_STARTED;
+        }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;

@@ -79,16 +79,22 @@ struct MANGOS_DLL_DECL npc_lazy_peonAI : public ScriptedAI
                 m_creature->GetMotionMaster()->MovePoint(1, fX, fY, fZ);
             }
             else
+            {
                 m_creature->GetMotionMaster()->MovePoint(2, fX, fY, fZ);
+            }
         }
         else
+        {
             script_error_log("No GameObject of entry %u was found in range or something really bad happened.", GO_LUMBERPILE);
+        }
     }
 
     void MovementInform(uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE || !uiPointId)
+        {
             return;
+        }
 
         m_creature->HandleEmote(EMOTE_STATE_WORK_CHOPWOOD);
         // TODO - random bevahior for self-invoked awakening guesswork
@@ -107,15 +113,21 @@ struct MANGOS_DLL_DECL npc_lazy_peonAI : public ScriptedAI
                 m_uiResetSleepTimer = 0;
             }
             else
+            {
                 m_uiResetSleepTimer -= uiDiff;
+            }
         }
 
         if (m_uiStopSleepingTimer)
         {
             if (m_uiStopSleepingTimer <= uiDiff)
+            {
                 StartLumbering(m_creature);
+            }
             else
+            {
                 m_uiStopSleepingTimer -= uiDiff;
+            }
         }
     }
 };
@@ -131,10 +143,14 @@ bool EffectDummyCreature_lazy_peon_awake(Unit* pCaster, uint32 uiSpellId, SpellE
     if (uiSpellId == SPELL_AWAKEN_PEON && uiEffIndex == EFFECT_INDEX_0)
     {
         if (!pCreatureTarget->HasAura(SPELL_PEON_SLEEP) || pCaster->GetTypeId() != TYPEID_PLAYER || pCreatureTarget->GetEntry() != NPC_SLEEPING_PEON)
+        {
             return true;
+        }
 
         if (npc_lazy_peonAI* pPeonAI = dynamic_cast<npc_lazy_peonAI*>(pCreatureTarget->AI()))
+        {
             pPeonAI->StartLumbering(pCaster);
+        }
 
         // always return true when we are handling this spell and effect
         return true;

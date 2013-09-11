@@ -42,7 +42,9 @@ void instance_razorfen_kraul::OnObjectCreate(GameObject* pGo)
         case GO_AGATHELOS_WARD:
             m_mGoEntryGuidStore[GO_AGATHELOS_WARD] = pGo->GetObjectGuid();
             if (m_auiEncounter[0] == DONE)
+            {
                 pGo->SetGoState(GO_STATE_ACTIVE);
+            }
             break;
     }
 }
@@ -101,7 +103,9 @@ void instance_razorfen_kraul::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
+        {
             m_auiEncounter[i] = NOT_STARTED;
+        }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;

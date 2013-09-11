@@ -138,17 +138,29 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 // Random switch between 5 outcomes
                 switch (urand(0, 4))
                 {
-                    case 0: DoScriptText(SAY_RANDOM_0, m_creature); break;
-                    case 1: DoScriptText(SAY_RANDOM_1, m_creature); break;
-                    case 2: DoScriptText(SAY_RANDOM_2, m_creature); break;
-                    case 3: DoScriptText(SAY_RANDOM_3, m_creature); break;
-                    case 4: DoScriptText(SAY_RANDOM_4, m_creature); break;
+                    case 0:
+                        DoScriptText(SAY_RANDOM_0, m_creature);
+                        break;
+                    case 1:
+                        DoScriptText(SAY_RANDOM_1, m_creature);
+                        break;
+                    case 2:
+                        DoScriptText(SAY_RANDOM_2, m_creature);
+                        break;
+                    case 3:
+                        DoScriptText(SAY_RANDOM_3, m_creature);
+                        break;
+                    case 4:
+                        DoScriptText(SAY_RANDOM_4, m_creature);
+                        break;
                 }
 
                 m_uiSayTimer = 45 * IN_MILLISECONDS;        // Say something agian in 45 seconds
             }
             else
+            {
                 m_uiSayTimer -= uiDiff;
+            }
 
             // Rebuff timer
             if (m_uiRebuffTimer < uiDiff)
@@ -158,12 +170,16 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 m_uiRebuffTimer = 15 * MINUTE * IN_MILLISECONDS;
             }
             else
+            {
                 m_uiRebuffTimer -= uiDiff;
+            }
         }
 
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // Abilities of all phases
         // Spell One timer
@@ -171,24 +187,30 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
         {
             // Cast spell one on our current target.
             if (rand() % 50 > 10)
+            {
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_ONE_ALT);
+            }
             else if (m_creature->IsWithinDist(m_creature->getVictim(), 25.0f))
+            {
                 DoCastSpellIfCan(m_creature->getVictim(), SPELL_ONE);
+            }
 
             m_uiSpellOneTimer = 5000;
         }
         else
-            m_uiSpellOneTimer -= uiDiff;
+            { m_uiSpellOneTimer -= uiDiff; }
 
         // Spell Two timer
         if (m_uiSpellTwoTimer < uiDiff)
         {
             // Cast spell two on self (AoE spell with only self-target) if we can
             if (DoCastSpellIfCan(m_creature, SPELL_TWO) == CAST_OK)
-                m_uiSpellTwoTimer = 37 * IN_MILLISECONDS;   // Only Update Timer, if we could start casting
+            {
+                m_uiSpellTwoTimer = 37 * IN_MILLISECONDS;    // Only Update Timer, if we could start casting
+            }
         }
         else
-            m_uiSpellTwoTimer -= uiDiff;
+            { m_uiSpellTwoTimer -= uiDiff; }
 
         // End of abliities of all phases
 
@@ -207,7 +229,9 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 }
             }
             else
+            {
                 m_uiPhaseTimer -= uiDiff;
+            }
         }
         // Phase 2 abilities
         else if (m_uiPhase > 1)
@@ -217,10 +241,14 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
             {
                 // Cast spell three on self (AoE spell with only self-target)
                 if (DoCastSpellIfCan(m_creature, SPELL_THREE) == CAST_OK)
+                {
                     m_uiSpellThreeTimer = 19000;
+                }
             }
             else
+            {
                 m_uiSpellThreeTimer -= uiDiff;
+            }
 
             // Beserk timer
             if (m_uiBeserkTimer < uiDiff)
@@ -236,7 +264,9 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 }
             }
             else
+            {
                 m_uiBeserkTimer -= uiDiff;
+            }
         }
 
         // Normal behaviour: if possible mobs do attack with melee

@@ -65,9 +65,13 @@ void instance_zulgurub::OnCreatureCreate(Creature* pCreature)
             break;
         case NPC_PANTHER_TRIGGER:
             if (pCreature->GetPositionY() < -1626)
+            {
                 m_lLeftPantherTriggerGUIDList.push_back(pCreature->GetObjectGuid());
+            }
             else
+            {
                 m_lRightPantherTriggerGUIDList.push_back(pCreature->GetObjectGuid());
+            }
             break;
     }
 }
@@ -96,12 +100,16 @@ void instance_zulgurub::SetData(uint32 uiType, uint32 uiData)
         case TYPE_THEKAL:
             m_auiEncounter[uiType] = uiData;
             if (uiData == DONE)
+            {
                 DoLowerHakkarHitPoints();
+            }
             break;
         case TYPE_MARLI:
             m_auiEncounter[uiType] = uiData;
             if (uiData == DONE)
+            {
                 DoLowerHakkarHitPoints();
+            }
             if (uiData == FAIL)
             {
                 for (GuidList::const_iterator itr = m_lSpiderEggGUIDList.begin(); itr != m_lSpiderEggGUIDList.end(); ++itr)
@@ -119,7 +127,9 @@ void instance_zulgurub::SetData(uint32 uiType, uint32 uiData)
             m_auiEncounter[uiType] = uiData;
             DoUseDoorOrButton(GO_FORCEFIELD);
             if (uiData == DONE)
+            {
                 DoLowerHakkarHitPoints();
+            }
             if (uiData == FAIL)
             {
                 // Note: this gameobject should change flags - currently it despawns which isn't correct
@@ -194,7 +204,9 @@ void instance_zulgurub::Load(const char* chrIn)
     for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
     {
         if (m_auiEncounter[i] == IN_PROGRESS)
+        {
             m_auiEncounter[i] = NOT_STARTED;
+        }
     }
 
     OUT_LOAD_INST_DATA_COMPLETE;
@@ -203,7 +215,9 @@ void instance_zulgurub::Load(const char* chrIn)
 uint32 instance_zulgurub::GetData(uint32 uiType) const
 {
     if (uiType < MAX_ENCOUNTER)
+    {
         return m_auiEncounter[uiType];
+    }
 
     return 0;
 }
@@ -217,11 +231,15 @@ Creature* instance_zulgurub::SelectRandomPantherTrigger(bool bIsLeft)
     for (GuidList::const_iterator itr = plTempList->begin(); itr != plTempList->end(); ++itr)
     {
         if (Creature* pTemp = instance->GetCreature(*itr))
+        {
             vTriggers.push_back(pTemp);
+        }
     }
 
     if (vTriggers.empty())
+    {
         return NULL;
+    }
 
     return vTriggers[urand(0, vTriggers.size() - 1)];
 }
@@ -236,10 +254,14 @@ bool AreaTrigger_at_zulgurub(Player* pPlayer, AreaTriggerEntry const* pAt)
     if (pAt->id == AREATRIGGER_ENTER || pAt->id == AREATRIGGER_ALTAR)
     {
         if (pPlayer->isGameMaster() || pPlayer->IsDead())
+        {
             return false;
+        }
 
         if (instance_zulgurub* pInstance = (instance_zulgurub*)pPlayer->GetInstanceData())
+        {
             pInstance->DoYellAtTriggerIfCan(pAt->id);
+        }
     }
 
     return false;

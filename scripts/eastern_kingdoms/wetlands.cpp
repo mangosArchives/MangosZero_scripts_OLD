@@ -52,7 +52,9 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
     void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
+        {
             m_bFriendSummoned = false;
+        }
     }
 
     void WaypointReached(uint32 uiPointId) override
@@ -61,7 +63,9 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
         {
             case 2:
                 if (m_creature->HasStealthAura())
+                {
                     m_creature->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
+                }
 
                 SetRun();
                 m_creature->SetFactionTemporary(FACTION_ENEMY, TEMPFACTION_RESTORE_RESPAWN | TEMPFACTION_RESTORE_COMBAT_STOP);
@@ -83,16 +87,22 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (Player* pPlayer = GetPlayerForEscort())
+        {
             pSummoned->AI()->AttackStart(pPlayer);
+        }
     }
 
     void AttackedBy(Unit* pAttacker) override
     {
         if (m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_creature->IsFriendlyTo(pAttacker))
+        {
             return;
+        }
 
         AttackStart(pAttacker);
     }
@@ -133,13 +143,19 @@ bool QuestAccept_npc_mikhail(Player* pPlayer, Creature* pCreature, const Quest* 
         Creature* pSlim = GetClosestCreatureWithEntry(pCreature, NPC_TAPOKE_SLIM_JAHN, 25.0f);
 
         if (!pSlim)
+        {
             return false;
+        }
 
         if (!pSlim->HasStealthAura())
+        {
             pSlim->CastSpell(pSlim, SPELL_STEALTH, true);
+        }
 
         if (npc_tapoke_slim_jahnAI* pEscortAI = dynamic_cast<npc_tapoke_slim_jahnAI*>(pSlim->AI()))
+        {
             pEscortAI->Start(false, pPlayer, pQuest);
+        }
     }
     return false;
 }

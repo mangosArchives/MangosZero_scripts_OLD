@@ -79,41 +79,53 @@ struct MANGOS_DLL_DECL boss_viscidusAI : public ScriptedAI
         DoCastSpellIfCan(m_creature, SPELL_TOXIN);
 
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_VISCIDUS, IN_PROGRESS);
+        }
     }
 
     void JustReachedHome() override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_VISCIDUS, FAIL);
+        }
     }
 
     void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
+        {
             m_pInstance->SetData(TYPE_VISCIDUS, DONE);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         if (m_uiPoisonShockTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_POISON_SHOCK) == CAST_OK)
+            {
                 m_uiPoisonShockTimer = urand(7000, 12000);
+            }
         }
         else
-            m_uiPoisonShockTimer -= uiDiff;
+            { m_uiPoisonShockTimer -= uiDiff; }
 
         if (m_uiPoisonBoltVolleyTimer < uiDiff)
         {
             if (DoCastSpellIfCan(m_creature, SPELL_POISONBOLT_VOLLEY) == CAST_OK)
+            {
                 m_uiPoisonBoltVolleyTimer = urand(10000, 15000);
+            }
         }
         else
-            m_uiPoisonBoltVolleyTimer -= uiDiff;
+            { m_uiPoisonBoltVolleyTimer -= uiDiff; }
 
         DoMeleeAttackIfReady();
     }

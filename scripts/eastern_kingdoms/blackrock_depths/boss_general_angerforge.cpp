@@ -62,14 +62,18 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
     void JustSummoned(Creature* pSummoned) override
     {
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
+        {
             pSummoned->AI()->AttackStart(pTarget);
+        }
     }
 
     void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
+        {
             return;
+        }
 
         // MightyBlow_Timer
         if (m_uiMightyBlowTimer < uiDiff)
@@ -78,7 +82,7 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
             m_uiMightyBlowTimer = 18000;
         }
         else
-            m_uiMightyBlowTimer -= uiDiff;
+            { m_uiMightyBlowTimer -= uiDiff; }
 
         // HamString_Timer
         if (m_uiHamStringTimer < uiDiff)
@@ -87,7 +91,7 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
             m_uiHamStringTimer = 15000;
         }
         else
-            m_uiHamStringTimer -= uiDiff;
+            { m_uiHamStringTimer -= uiDiff; }
 
         // Cleave_Timer
         if (m_uiCleaveTimer < uiDiff)
@@ -96,7 +100,7 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
             m_uiCleaveTimer = 9000;
         }
         else
-            m_uiCleaveTimer -= uiDiff;
+            { m_uiCleaveTimer -= uiDiff; }
 
         // Adds_Timer
         if (m_creature->GetHealthPercent() < 21.0f)
@@ -111,7 +115,9 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
                 m_uiAddsTimer = 25000;
             }
             else
+            {
                 m_uiAddsTimer -= uiDiff;
+            }
         }
 
         // Summon Medics
