@@ -402,7 +402,7 @@ uint32 GetNPCDialogStatus(Player* pPlayer, Creature* pCreature)
 
     if (!pTempScript || !pTempScript->pDialogStatusNPC)
     {
-        return 100;
+        return DIALOG_STATUS_UNDEFINED;
     }
 
     pPlayer->PlayerTalkClass->ClearMenus();
@@ -417,7 +417,7 @@ uint32 GetGODialogStatus(Player* pPlayer, GameObject* pGo)
 
     if (!pTempScript || !pTempScript->pDialogStatusGO)
     {
-        return 100;
+        return DIALOG_STATUS_UNDEFINED;
     }
 
     pPlayer->PlayerTalkClass->ClearMenus();
