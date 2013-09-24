@@ -206,6 +206,7 @@ UPDATE creature_template SET ScriptName='npc_prospector_remtravel' WHERE entry=2
 UPDATE creature_template SET ScriptName='npc_threshwackonator' WHERE entry=6669;
 UPDATE creature_template SET ScriptName='npc_volcor' WHERE entry=3692;
 UPDATE creature_template SET ScriptName='npc_therylune' WHERE entry=3584;
+UPDATE creature_template SET ScriptName='npc_rabid_bear' WHERE entry=2164;
 
 /* DARNASSUS */
 
@@ -258,6 +259,7 @@ UPDATE creature_template SET ScriptName='npc_oox22fe' WHERE entry=7807;
 UPDATE creature_template SET ScriptName='boss_thermaplugg' WHERE entry=7800;
 UPDATE gameobject_template SET ScriptName='go_gnomeface_button' WHERE entry BETWEEN 142214 AND 142219;
 UPDATE creature_template SET ScriptName='npc_blastmaster_emi_shortfuse' WHERE entry=7998;
+UPDATE creature_template SET ScriptName='npc_kernobee' WHERE entry=7850;
 UPDATE instance_template SET ScriptName='instance_gnomeregan' WHERE map=90;
 
 /* HILLSBRAD FOOTHILLS */
